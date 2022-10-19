@@ -1,3 +1,7 @@
+# Acomodar los métodos Listar
+# Colocar if self.conexion.is_connected(): dentro de try - except?
+# Por qué comentar los #self.conexion.close():?
+# Métodos insertar # Vengan como objeto?
 import mysql.connector
 
 class Conectar():
@@ -5,18 +9,17 @@ class Conectar():
     def __init__(self) -> None:
         try:
             self.conexion = mysql.connector.connect(
-                host = 'localhost',
+                host = 'sql10.freesqldatabase.com',
                 port = 3306,
-                user = 'root',
-                password = '',
-                db = 'disqueria'
-
+                user = 'sql10524202',
+                password = 'vpbuQZVVL4',
+                db = 'sql10524202'
             )
         except mysql.connector.Error as descripcionError:
             print("¡No se conectó!",descripcionError)
-    
+# Como está.    
     def ListarAlbumes(self):
-        if self.conexion.is_connected():
+        if self.conexion.is_connected(): # Duda
             try:
                 cursor = self.conexion.cursor()
                 senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero ORDER By interprete.apellido desc"
@@ -24,10 +27,9 @@ class Conectar():
                 resultados = cursor.fetchall()
                 self.conexion.close()
                 return resultados
-
-
             except mysql.connector.Error as descripcionError:
-                print("¡No se conectó!",descripcionError)
+                print("¡No se conectó!",descripcionError) # Duda poner el error afuera?
+
     def ListarPorGenero(self):
         if self.conexion.is_connected():
             try:
@@ -35,10 +37,8 @@ class Conectar():
                 senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero ORDER By genero.nombre asc"
                 cursor.execute(senteciaSQL)
                 resultados = cursor.fetchall()
-                #self.conexion.close()
+                 # why dis
                 return resultados
-
-
             except mysql.connector.Error as descripcionError:
                 print("¡No se conectó!",descripcionError)
 
@@ -55,7 +55,7 @@ class Conectar():
             except mysql.connector.Error as descripcionError:
                 print("¡No se conectó!",descripcionError)
 
-    def InsertarInterprete(self,nombre,apellido,nacionalidad,foto):
+    def InsertarInterprete(self,nombre,apellido,nacionalidad,foto): 
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()

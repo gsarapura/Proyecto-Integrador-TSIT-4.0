@@ -20,6 +20,7 @@ def InsertarAlbum():
     cod_album = int(input("\nIngrese el código del nuevo Álbum: "))
     nombre = input("Ingrese el nombre del álbum: ")
 
+    # Hay que tener los siguientes datos ya dentro de la base:
     con = modelo.Conectar()
 
     print("\nIntérpretes Disponibles:")
@@ -33,7 +34,7 @@ def InsertarAlbum():
         print(g)
     id_genero = int(input("\nIngrese el ID del Género: "))
 
-    cant_temas = int(input("\nIngrese la cantidad de temas: "))
+    cant_temas = int(input("\nIngrese la cantidad de temas: ")) # Menos este, por supuesto.
 
     print("\nDiscográfica")
     for d in con.ListarDiscografica():
@@ -43,8 +44,9 @@ def InsertarAlbum():
     print("\nFormato")
     for f in con.ListarFormato():
         print(f)
-        
     id_formato = int(input("\nIngrese el ID del formato: "))
+    # Hasta acá.
+
     fec_lanzamiento = input("\nIngrese la Fecha de Lanzamiento (aaaa-mm-dd): ")
     precio = float(input("\nIngrese el precio: "))
     cantidad = int(input("\nIngrese cantidad disponible de este álbum: "))

@@ -10,7 +10,7 @@ while True:
     print("2 - LISTADO DE ÁLBUMES POR ARTISTAS")
     print("3 - LISTADO DE ÁLBUMES POR GÉNERO MUSICAL")
     print("4 - BÚSQUEDA POR NOMBRE DE ÁLBUM")
-    print("5 - INSERTAR INTERPRETE")
+    print("5 - INSERTAR INTERPRETE") # EXTRA
     print("6 - SALIR")
     print("\n")
     opcion = int(input("Ingrese su opción: "))

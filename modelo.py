@@ -12,7 +12,7 @@ class Conectar():
                 host = 'localhost',
                 port = 3306,
                 user = 'root',
-                password = '1234',
+                password = '15963200',
                 db = 'disqueria'
             )
         except mysql.connector.Error as descripcionError:
@@ -116,6 +116,35 @@ class Conectar():
             except mysql.connector.Error as descripcionError:
                 print("¡No se conectó!",descripcionError)
 
+    
+    def ModificarAlbum(self,album):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                sentenciaSQL = "UPDATE album SET nombre = %s, id_interprete = %s, id_genero = %s, cant_temas = %s, id_discografica = %s, id_formato = %s, fec_lanzamiento = %s, precio = %s, cantidad = %s, caratula = %s WHERE cod_album = %s"
+
+                data = (album.getNombre(),
+                album.getId_interprete(),
+                album.getId_genero(),
+                album.getCant_temas(),
+                album.getId_discografica(),
+                album.getId_formato(),
+                album.getFec_lanzamiento(),
+                album.getPrecio(),
+                album.getCantidad(),
+                album.getCaratula(),
+                album.getCod_album())
+
+                cursor.execute(sentenciaSQL,data)
+
+                self.conexion.commit()
+                self.conexion.close()
+                print("Álbum modificado correctamente")
+
+            except mysql.connector.Error as descripcionError:
+                print("¡No se conectó!",descripcionError)
+    
+    
     def ListarTema(self):
         if self.conexion.is_connected():
             try:

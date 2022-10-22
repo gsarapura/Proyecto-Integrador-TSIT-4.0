@@ -16,7 +16,7 @@ while True:
     opcion = int(input("Ingrese su opción: "))
 
     if opcion == 1:
-        controlador.InsertarAlbum()
+        controlador.ABMAlbum()
     elif opcion == 2:
         controlador.ListarAlbumesPorArtistas()
     elif opcion == 3:

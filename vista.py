@@ -12,7 +12,11 @@ def vista_abm():
         print("3 - MODIFICACIÓN DE ÁLBUM")
         print("4 - SALIR")
         print("\n")
-        opcion = int(input("Ingrese su opción: "))
+        try:
+            opcion = int(input("Ingrese su opción: "))
+        except ValueError:
+            print("Ingrese solo números, por favor.")
+            continue 
 
         if opcion == 1:
             controlador.InsertarAlbum()
@@ -31,14 +35,17 @@ while True:
     print("+-------------------------------------------+\n")
     print("")
     print("MENÚ PRINCIPAL\n")
-    print("1 - ALTA / BAJA / MODIFICACION DE UN ÁLBUM")
+    print("1 - ALTA, BAJA O MODIFICACIÓN DE UN ÁLBUM")
     print("2 - LISTADO DE ÁLBUMES POR ARTISTAS")
     print("3 - LISTADO DE ÁLBUMES POR GÉNERO MUSICAL")
     print("4 - BÚSQUEDA POR NOMBRE DE ÁLBUM")
     print("5 - INSERTAR INTERPRETE") # EXTRA
-    print("6 - SALIR")
-    print("\n")
-    opcion = int(input("Ingrese su opción: "))
+    print("6 - SALIR\n")
+    try:
+        opcion = int(input("Ingrese su opción: "))
+    except ValueError:
+        print("Ingrese solo números, por favor.")
+        continue 
 
     if opcion == 1:
         vista_abm()
@@ -50,6 +57,8 @@ while True:
         None
     elif opcion == 5:
         None
+    elif opcion == "":
+        print("Solo ingrese números.")
     elif opcion == 6:
         break
     else:

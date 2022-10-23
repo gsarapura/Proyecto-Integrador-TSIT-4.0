@@ -20,30 +20,6 @@ def ListarAlbumesPorGenero():
 
 
 
-def ABMAlbum():
-    while True:
-        print("\n+-------------------------------------------+")
-        print("|         DISQUERÍA FORMOSA MUSICAL         |")
-        print("+-------------------------------------------+\n")
-        print("")
-        print("MENÚ DE ALTA / BAJA / MODIFICACIÓN DE ÁLBUMES\n")
-        print("1 - NUEVO ÁLBUM")
-        print("2 - MODIFICAR ÁLBUM")
-        print("3 - ELIMINAR ÁLBUM")
-        print("4 - VOLVER AL MENÚ PRINCIPAL")
-        print("\n")
-        opcion = int(input("Ingrese su opción: "))
-
-        if opcion == 1:
-            InsertarAlbum()
-        elif opcion == 2:
-            ModificarAlbum()
-        elif opcion == 3:
-            EliminarAlbum()
-        elif opcion == 4:
-            break
-        else:
-            print("¡Opción incorrecta!")
 
 
 
@@ -123,7 +99,13 @@ def ModificarAlbum():
     cantidad = int(input("\nIngrese cantidad disponible de este álbum: "))
     caratula = input("\nIngrese la dirección web de la Carátula: ")
 
-    nuevoAlbum = modelo.Album(0,cod_album,nombre,id_genero,cant_temas,id_discografica,fec_lanzamiento,precio,cantidad,caratula)
+    nuevoAlbum = modelo.Album(0,cod_album,nombre,id_interprete,id_genero,cant_temas,id_discografica,id_formato,fec_lanzamiento,precio,cantidad,caratula)
     con.ModificarAlbum(nuevoAlbum)
     input("Presione ENTER para continuar")
 
+def EliminarAlbum():
+    ListarAlbumesPorArtistas()
+    cod_album = int(input("\nIngrese el código del Álbum que quiere eliminar: "))
+    con = modelo.Conectar()
+    con.EliminarAlbum(cod_album)
+    input("Presione ENTER para continuar")

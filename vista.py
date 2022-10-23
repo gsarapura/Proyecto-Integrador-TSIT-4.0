@@ -1,5 +1,33 @@
 import controlador
 
+
+
+def ABMAlbum():
+    while True:
+        print("\n+-------------------------------------------+")
+        print("|         DISQUERÍA FORMOSA MUSICAL         |")
+        print("+-------------------------------------------+\n")
+        print("")
+        print("MENÚ DE ALTA / BAJA / MODIFICACIÓN DE ÁLBUMES\n")
+        print("1 - NUEVO ÁLBUM")
+        print("2 - MODIFICAR ÁLBUM")
+        print("3 - ELIMINAR ÁLBUM")
+        print("4 - VOLVER AL MENÚ PRINCIPAL")
+        print("\n")
+        opcion = int(input("Ingrese su opción: "))
+
+        if opcion == 1:
+            controlador.InsertarAlbum()
+        elif opcion == 2:
+            controlador.ModificarAlbum()
+        elif opcion == 3:
+            controlador.EliminarAlbum()
+        elif opcion == 4:
+            break
+        else:
+            print("¡Opción incorrecta!")
+
+            
 while True:
     print("\n+-------------------------------------------+")
     print("|         DISQUERÍA FORMOSA MUSICAL         |")
@@ -16,7 +44,7 @@ while True:
     opcion = int(input("Ingrese su opción: "))
 
     if opcion == 1:
-        controlador.ABMAlbum()
+        ABMAlbum()
     elif opcion == 2:
         controlador.ListarAlbumesPorArtistas()
     elif opcion == 3:

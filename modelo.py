@@ -144,8 +144,25 @@ class Conectar():
             except mysql.connector.Error as descripcionError:
                 print("¡No se conectó!",descripcionError)
     
+    def EliminarAlbum(self,cod_album):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                sentenciaSQL = "DELETE FROM album WHERE cod_album = %s"
+
+                data = (cod_album,)
+
+                cursor.execute(sentenciaSQL,data)
+
+                self.conexion.commit()
+                self.conexion.close()
+                print("Álbum eliminado correctamente")
+
+            except mysql.connector.Error as descripcionError:
+                print("¡No se conectó!",descripcionError)
     
     def ListarTema(self):
+        
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()

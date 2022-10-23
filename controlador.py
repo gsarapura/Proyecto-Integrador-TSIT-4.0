@@ -1,12 +1,35 @@
 import modelo
-from tabulate import tabulate
+from rich.table import Table
+from rich.console import Console
+#from tabulate import tabulate
+
+
 
 def ListarAlbumesPorArtistas():
     con = modelo.Conectar()
     listado = con.ListarAlbumes()
 
-    print(tabulate(listado, headers=['APELLIDO', 'NOMBRE','COD. ÁLBUM', 'ÁLBUM',
-          'GÉNERO', 'DISCOGRÁFICA', 'PRECIO', 'CANTIDAD', 'FORMATO'], tablefmt='psql'))
+    table = Table(title="Álbumes por Artista")
+
+    
+    table.add_column("APELLIDO", style="cyan")
+    table.add_column("NOMBRE", style="cyan")
+    table.add_column("COD. ÁLBUM", style="cyan")
+    table.add_column("ÁLBUM", style="cyan")
+    table.add_column("GÉNERO", style="cyan")
+    table.add_column("DISCOGRÁFICA", style="cyan")
+    table.add_column("PRECIO", style="cyan")
+    table.add_column("CANTIDAD", style="cyan")
+    table.add_column("FORMATO", style="cyan")
+
+    for album in listado:
+        table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(
+            album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]))
+    console = Console()
+    console.print(table)
+
+    #print(tabulate(listado, headers=['APELLIDO', 'NOMBRE','COD. ÁLBUM', 'ÁLBUM',
+     #     'GÉNERO', 'DISCOGRÁFICA', 'PRECIO', 'CANTIDAD', 'FORMATO'], tablefmt='psql'))
 
     input("Presione ENTER para continuar")
 
@@ -14,8 +37,26 @@ def ListarAlbumesPorGenero():
     con = modelo.Conectar() 
     listado = con.ListarPorGenero()
 
-    print(tabulate(listado, headers=['GÉNERO', 'COD. ÁLBUM', 'ÁLBUM', 'NOMBRE-INTÉRPRETE', 'APELLIDO',
-           'DISCOGRÁFICA', 'PRECIO', 'CANTIDAD', 'FORMATO'], tablefmt='psql'))
+    table = Table(title="Álbumes por Género")
+
+    table.add_column("GÉNERO", style="cyan")
+    table.add_column("COD. ÁLBUM", style="cyan")
+    table.add_column("ÁLBUM", style="cyan")
+    table.add_column("APELLIDO ARTISTA", style="cyan")
+    table.add_column("NOMBRE", style="cyan")
+    table.add_column("DISCOGRÁFICA", style="cyan")
+    table.add_column("PRECIO", style="cyan")
+    table.add_column("CANTIDAD", style="cyan")
+    table.add_column("FORMATO", style="cyan")
+
+    for album in listado:
+        table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(
+            album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]))
+    console = Console()
+    console.print(table)
+
+    #print(tabulate(listado, headers=['GÉNERO', 'COD. ÁLBUM', 'ÁLBUM', 'NOMBRE-INTÉRPRETE', 'APELLIDO',
+    #       'DISCOGRÁFICA', 'PRECIO', 'CANTIDAD', 'FORMATO'], tablefmt='psql'))
     #print("\n| COD. ÁLBUM   |          NOMBRE              |       INTERPRETE              |   GENERO   |     DISCOGRAFICA   |   PRECIO   |   CANTIDAD   |  FORMATO   |")
     #for album in listado:
     #    print(' ',album[0],"\t",album[1],"\t\t",album[2]+' '+album[3],"\t\t  ",album[4],"\t",album[5]," $",album[6]," Cant:",album[7]," ",album[8])

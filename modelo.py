@@ -32,7 +32,7 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                senteciaSQL = "SELECT genero.nombre,cod_album, album.nombre, interprete.nombre, interprete.apellido, discografica.nombre, precio, cantidad, formato.tipo FROM album INNER JOIN interprete ON album.id_interprete = interprete.id_interprete INNER JOIN discografica ON album.id_discografica = discografica.id_discografica INNER JOIN formato ON album.id_formato = formato.id_formato INNER JOIN genero ON album.id_genero = genero.id_genero ORDER By genero.nombre asc, interprete.apellido, interprete.nombre"
+                senteciaSQL = "SELECT genero.nombre,cod_album, album.nombre, interprete.apellido, interprete.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album INNER JOIN interprete ON album.id_interprete = interprete.id_interprete INNER JOIN discografica ON album.id_discografica = discografica.id_discografica INNER JOIN formato ON album.id_formato = formato.id_formato INNER JOIN genero ON album.id_genero = genero.id_genero ORDER By genero.nombre asc, interprete.apellido, interprete.nombre"
                 cursor.execute(senteciaSQL)
                 resultados = cursor.fetchall()
                 #self.conexion.close()

@@ -5,21 +5,21 @@ console = Console(width=80, record=True)
 
 def vista_abm():
     while True:
-        console.rule("", style="blue")
-        console.print("DISQUERÍA FORMOSA MUSICAL", justify="center", style="bold on red")
-        console.rule("", style="blue")
-        console.print("MENÚ ABM\n", style="bold blue", justify="center")
-        console.print("1 - ALTA DE ÁLBUM")
-        console.print("2 - BAJA DE ÁLBUM")
-        console.print("3 - MODIFICACIÓN DE ÁLBUM")
-        console.print("4 - SALIR")
-        console.print("\n")
+        console.rule("", style="bold gold3")
+        console.print("DISQUERÍA FORMOSA MUSICAL", justify="center", style="bold white on deep_sky_blue4")
+        console.rule("", style="bold gold3")
+        console.print("MENÚ ABM\n", style="bold deep_sky_blue3", justify="center")
+        
+        console.print("1 - [bold]ALTA DE ÁLBUM[/]")
+        console.print("2 - [bold]BAJA DE ÁLBUM[/]")
+        console.print("3 - [bold]MODIFICACIÓN DE ÁLBUM[/]")
+        console.print("4 - [bold italic red]SALIR[/]\n")
+        
         try:
-            opcion = int(input("Ingrese su opción: "))
+            opcion = int(console.input("[i]Ingrese su [bold cyan]opción[/][/i] :smiley:: ")) 
         except ValueError:
-            print("Ingrese solo números, por favor.")
+            console.print("[i]Ingrese solo [bold gold3]números[/], por favor[/i] :confused:.")
             continue 
-
         if opcion == 1:
             controlador.InsertarAlbum()
         elif opcion == 2:
@@ -27,6 +27,7 @@ def vista_abm():
         elif opcion == 3:
             controlador.ListarAlbumesPorGenero()
         elif opcion == 4:
+            print("")
             break
         else:
             print("¡Opción incorrecta!")
@@ -42,6 +43,7 @@ while True:
     console.print("4 - [bold]BÚSQUEDA POR NOMBRE DE ÁLBUM[/]")
     console.print("5 - [bold]INSERTAR INTERPRETE[/]") # EXTRA
     console.print("6 - [bold italic red]SALIR[/]\n")
+    
     try:
         opcion = int(console.input("[i]Ingrese su [bold cyan]opción[/][/i] :smiley:: ")) 
     except ValueError:
@@ -59,6 +61,7 @@ while True:
     elif opcion == 5:
         None
     elif opcion == 6:
+        console.print("\n[italic bold]¡[gold1]Gracias[/], nos vemos![/] :sunglasses:\n")
         break
     else:
         console.print("[i]¡Opción [bold red]incorrecta[/]![/i] :flushed:")

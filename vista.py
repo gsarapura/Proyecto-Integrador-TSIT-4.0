@@ -9,7 +9,6 @@ def vista_abm():
         console.print("DISQUERÍA FORMOSA MUSICAL", justify="center", style="bold white on deep_sky_blue4")
         console.rule("", style="bold gold3")
         console.print("MENÚ ABM\n", style="bold deep_sky_blue3", justify="center")
-        
         console.print("1 - [bold]ALTA DE ÁLBUM[/]")
         console.print("2 - [bold]BAJA DE ÁLBUM[/]")
         console.print("3 - [bold]MODIFICACIÓN DE ÁLBUM[/]")

@@ -1,19 +1,24 @@
 import modelo
+from tabulate import tabulate
 
 def ListarAlbumesPorArtistas():
     con = modelo.Conectar()
     listado = con.ListarAlbumes()
-    print("\n| COD. ÁLBUM   |          NOMBRE              |       INTERPRETE              |   GENERO   |     DISCOGRAFICA   |   PRECIO   |   CANTIDAD   |  FORMATO   |")
-    for album in listado:
-        print(' ',album[0],"\t",album[1],"\t\t",album[2]+' '+album[3],"\t\t  ",album[4],"\t",album[5]," $",album[6]," Cant:",album[7]," ",album[8])
+
+    print(tabulate(listado, headers=['APELLIDO', 'NOMBRE','COD. ÁLBUM', 'ÁLBUM',
+          'GÉNERO', 'DISCOGRÁFICA', 'PRECIO', 'CANTIDAD', 'FORMATO'], tablefmt='psql'))
+
     input("Presione ENTER para continuar")
 
 def ListarAlbumesPorGenero():
-    con = modelo.Conectar()
+    con = modelo.Conectar() 
     listado = con.ListarPorGenero()
-    print("\n| COD. ÁLBUM   |          NOMBRE              |       INTERPRETE              |   GENERO   |     DISCOGRAFICA   |   PRECIO   |   CANTIDAD   |  FORMATO   |")
-    for album in listado:
-        print(' ',album[0],"\t",album[1],"\t\t",album[2]+' '+album[3],"\t\t  ",album[4],"\t",album[5]," $",album[6]," Cant:",album[7]," ",album[8])
+
+    print(tabulate(listado, headers=['GÉNERO', 'COD. ÁLBUM', 'ÁLBUM', 'NOMBRE-INTÉRPRETE', 'APELLIDO',
+           'DISCOGRÁFICA', 'PRECIO', 'CANTIDAD', 'FORMATO'], tablefmt='psql'))
+    #print("\n| COD. ÁLBUM   |          NOMBRE              |       INTERPRETE              |   GENERO   |     DISCOGRAFICA   |   PRECIO   |   CANTIDAD   |  FORMATO   |")
+    #for album in listado:
+    #    print(' ',album[0],"\t",album[1],"\t\t",album[2]+' '+album[3],"\t\t  ",album[4],"\t",album[5]," $",album[6]," Cant:",album[7]," ",album[8])
     input("Presione ENTER para continuar")
 
 def InsertarAlbum():

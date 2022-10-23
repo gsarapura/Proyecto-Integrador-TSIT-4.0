@@ -1,7 +1,7 @@
 import controlador
 from rich.console  import Console
 
-console = Console(width=80, record=True)
+console = Console(width=80)
 
 def vista_abm():
     while True:

@@ -1,7 +1,5 @@
-from socket import J1939_MAX_UNICAST_ADDR
 import controlador
 from rich.console  import Console
-from rich.terminal_theme import MONOKAI
 
 console = Console(width=80, record=True)
 
@@ -38,11 +36,11 @@ while True:
     console.print("DISQUERÍA FORMOSA MUSICAL", justify="center", style="bold white on deep_sky_blue4")
     console.rule("", style="bold gold3")
     console.print("MENÚ PRINCIPAL\n", style="bold dark_orange3", justify="center")
-    console.print("1 - ALTA, BAJA O MODIFICACIÓN DE UN ÁLBUM")
-    console.print("2 - LISTADO DE ÁLBUMES POR ARTISTAS")
-    console.print("3 - LISTADO DE ÁLBUMES POR GÉNERO MUSICAL")
-    console.print("4 - BÚSQUEDA POR NOMBRE DE ÁLBUM")
-    console.print("5 - INSERTAR INTERPRETE") # EXTRA
+    console.print("1 - [bold]ALTA, BAJA O MODIFICACIÓN DE UN ÁLBUM[/]")
+    console.print("2 - [bold]LISTADO DE ÁLBUMES POR ARTISTAS[/]")
+    console.print("3 - [bold]LISTADO DE ÁLBUMES POR GÉNERO MUSICAL[/]")
+    console.print("4 - [bold]BÚSQUEDA POR NOMBRE DE ÁLBUM[/]")
+    console.print("5 - [bold]INSERTAR INTERPRETE[/]") # EXTRA
     console.print("6 - [bold italic red]SALIR[/]\n")
     try:
         opcion = int(console.input("[i]Ingrese su [bold cyan]opción[/][/i] :smiley:: ")) 

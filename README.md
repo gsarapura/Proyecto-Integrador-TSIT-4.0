@@ -9,7 +9,12 @@
 
 ## Requisitos:
 - Python 3.7 o posterior.
+- Pip (acorde a cada SO).
+- Módulo mysql-connector:
+``` sh
+pip install mysql-connector-python 
+```
 - Módulo rich:
 ``` sh
-python -m pip install rich 
+pip install rich 
 ``` 

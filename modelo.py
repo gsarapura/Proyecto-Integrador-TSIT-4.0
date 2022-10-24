@@ -61,16 +61,32 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sentenciaSQL = "INSERT into interprete values(null,%s,%s,%s,%s,1)"
-
-                data = (interprete.getnombre(),interprete.getapellido(),interprete.getnacionalidad(),interprete.getfoto())
-
-                cursor.execute(sentenciaSQL,data)
-
-                self.conexion.commit()
-                self.conexion.close()
-                print("Intérprete insertado correctamente")
-
+                revisoExistenciaSQL = "SELECT * from interprete where nombre = %s and apellido = %s"
+                data = (interprete.getNombre(),interprete.getApellido())
+                cursor.execute(revisoExistenciaSQL,data)
+                resultado = cursor.fetchall()
+                if len(resultado) == 0:
+                    sentenciaSQL = "INSERT into interprete values(null,%s,%s,%s,%s,1)"
+                    data = (interprete.getNombre(),interprete.getApellido(),interprete.getNacionalidad(),interprete.getFoto())
+                    cursor.execute(sentenciaSQL,data)
+                    self.conexion.commit()
+                    self.conexion.close()
+                    print("Intérprete insertado correctamente")
+                else:
+                    print("El intérprete ya existe")
+                    option = input("¿Desea darlo de alta nuevamente? (Si/No): ")
+                    option = option.lower()
+                    if option == "si":
+                        sentenciaSQL = "update interprete set vigente = 1 where nombre = %s and apellido = %s"
+                        data = (interprete.getNombre(),interprete.getApellido())
+                        cursor.execute(sentenciaSQL,data)
+                        self.conexion.commit()
+                        self.conexion.close()
+                        print("Intérprete dado de alta nuevamente")
+                    else:
+                        print("Intérprete no dado de alta nuevamente")
+                        self.conexion.commit()
+                        self.conexion.close()
             except mysql.connector.Error as descripcionError:
                 print("Error al Guardar!",descripcionError)
 
@@ -80,7 +96,7 @@ class Conectar():
                 cursor = self.conexion.cursor()
                 sentenciaSQL = "update interprete set nombre = %s, apellido = %s, nacionalidad = %s, foto = %s where id_interprete = %s"
 
-                data = (interprete.getnombre(),interprete.getapellido(),interprete.getnacionalidad(),interprete.getfoto(),interprete.getid_interprete())
+                data = (interprete.getNombre(),interprete.getApellido(),interprete.getNacionalidad(),interprete.getFoto(),interprete.getId_interprete())
 
                 cursor.execute(sentenciaSQL,data)
 
@@ -95,14 +111,21 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
+                # cursor = self.conexion.cursor(buffered=True)
                 revisoAlbumsSQL = "select * from album where id_interprete = %s and vigente = 1"
                 cursor.execute(revisoAlbumsSQL,(id_interprete,))
-                if cursor.rowcount > 0:
-                    print("No se puede eliminar el interprete porque hay albunes y temas asociados a ese id")
+                resultados = cursor.fetchall()
+                if len(resultados) > 0:
+                    print("No se puede eliminar el interprete porque hay albunes y temas asociados a ese id: ")
+                    for i in resultados:
+                        print(i)
                     option = input("¿Desea dar de baja los albunes y temas asociados a ese intérprete? Si/No: ")
-                    if option == "si" or option == "SI" or option == "Si":
-                        sentenciaSQL = "update album set vigente = 0 where id_interprete = %s;update tema set vigente = 0 where id_album in (select id_album from album where id_interprete = %s)"
+                    option = option.lower()
+                    if  option == "si":
+                        sentenciaSQL = "update album set vigente = 0 where id_interprete = %s;"
+                        sentenciaSQL2 = "update tema set vigente = 0 where id_album in (select id_album from album where id_interprete = %s)"
                         cursor.execute(sentenciaSQL,(id_interprete,))
+                        cursor.execute(sentenciaSQL2,(id_interprete,))
                         self.conexion.commit()
                         self.conexion.close()
                         print("Albunes eliminados correctamente")
@@ -201,8 +224,11 @@ class Conectar():
                 cursor = self.conexion.cursor()
                 revisoTemasSQL = "select * from tema where id_album = %s and vigente = 1"
                 cursor.execute(revisoTemasSQL,(cod_album,))
-                if cursor.rowcount > 0:
-                    print("No se puede eliminar el album porque hay temas asociados a ese id")
+                resultado = cursor.fetchall()
+                if len(resultado) > 0:
+                    print("No se puede eliminar el album porque hay temas asociados a ese id: ")
+                    for i in resultado:
+                        print(i)
                     option = input("¿Desea dar de baja los temas asociados a ese album? Si/No: ")
                     if option == "si" or option == "SI" or option == "Si":
                         sentenciaSQL = "update tema set vigente = 0 where id_album = %s"

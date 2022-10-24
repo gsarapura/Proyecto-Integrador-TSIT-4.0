@@ -19,7 +19,7 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero ORDER By interprete.apellido desc"
+                senteciaSQL = "SELECT interprete.apellido, interprete.nombre, cod_album, album.nombre, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album INNER JOIN interprete ON album.id_interprete = interprete.id_interprete INNER JOIN discografica ON album.id_discografica = discografica.id_discografica INNER JOIN formato ON album.id_formato = formato.id_formato INNER JOIN genero ON album.id_genero = genero.id_genero where cantidad>0 ORDER By interprete.apellido, interprete.nombre, cod_album"
                 cursor.execute(senteciaSQL)
                 resultados = cursor.fetchall()
                 self.conexion.close()
@@ -32,7 +32,7 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero ORDER By genero.nombre asc"
+                senteciaSQL = "SELECT genero.nombre, cod_album, album.nombre, interprete.nombre, interprete.apellido, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero ORDER By genero.nombre asc"
                 cursor.execute(senteciaSQL)
                 resultados = cursor.fetchall()
                 #self.conexion.close()

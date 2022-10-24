@@ -8,7 +8,7 @@ class Conectar():
                 host = 'localhost',
                 port = 3306,
                 user = 'root',
-                password = '',
+                password = '15963200',
                 db = 'disqueria'
 
             )
@@ -164,18 +164,20 @@ class Conectar():
             except mysql.connector.Error as descripcionError:
                 print("¡No se conectó!",descripcionError)
 
-    def ListarBusquedaNombreAlbum(self,nombre_album):
+    def ListarBusquedaNombreAlbum(self,nombre):
         if self.conexion.is_connected():
             try:
-                cursor = self.conexion.cursor()
-                sentenciaSQL = "SELECT * FROM album WHERE album.nombre_album =values(%s)"
+                cursor = self.conexion.cursor() 
+                sentenciaSQL = f"SELECT * FROM album WHERE album.nombre like '%{nombre}%';"
 
-                data = ("album_nombre")
+                # data = (nombre,)
 
-                cursor.execute(sentenciaSQL,data)
-                self.conexion.commit()
+                cursor.execute(sentenciaSQL)
+                resultados = cursor.fetchall()
+                
                 self.conexion.close()
-
+                self.conexion.close()
+                return resultados
             except mysql.connector.Error as descripcionError:
                 print("¡Ha ocurrido un error! Intente nuevamente.",descripcionError)
 

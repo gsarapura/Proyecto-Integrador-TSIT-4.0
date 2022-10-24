@@ -1,14 +1,15 @@
-## Proyecto-Integrador-TSIT-4.0
+# Proyecto-Integrador-TSIT-4.0
 
-# Integrantes
+## Integrantes
 
 - Balduzzi, Lucas
 - Oliver, Juan Guillermo
 - Quintana, Hernán Darío
 - Sarapura, Gustavo
 
-# Requisitos:
+## Requisitos:
 - Python 3.7 o posterior.
 - Módulo rich:
-
-``` python -m pip install rich ``` 
+``` sh
+python -m pip install rich 
+``` 

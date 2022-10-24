@@ -40,7 +40,10 @@ def vista_abm():
             break
         else:
             print("¡Opción incorrecta!")
-        
+# MMMM es un parche. Necesita mejora.
+valuerror = 2    
+incorrecto = 2
+
 while True:
     clear()
 
@@ -55,13 +58,22 @@ while True:
     console.print("5 - [bold]INSERTAR INTERPRETE[/]") # EXTRA
     console.print("6 - [bold italic red]SALIR[/]\n")
 
+    
+
     try:
+        if valuerror == 1:
+            console.print("[i]Ingrese solo [bold gold3]números[/], por favor[/i] :confused:.")
+            incorrecto = 0
+        if incorrecto == 1:
+            console.print("[i]¡Opción [bold red]incorrecta[/]![/i] :flushed:")
+            #valuerror = 0
         opcion = int(console.input("[i]Ingrese su [bold cyan]opción[/][/i] :smiley:: ")) 
     except ValueError:
-        console.print("[i]Ingrese solo [bold gold3]números[/], por favor[/i] :confused:.")
+        valuerror = 1
         continue 
     
-    clear()
+    valuerror = 0
+    incorrecto = 0
 
     if opcion == 1:
         vista_abm()
@@ -83,4 +95,4 @@ while True:
         console.print("\n[italic bold]¡[gold1]Gracias[/], nos vemos![/] :sunglasses:\n")
         break
     else:
-        console.print("[i]¡Opción [bold red]incorrecta[/]![/i] :flushed:")
+        incorrecto = 1

@@ -1,6 +1,17 @@
 import controlador
+import os
+from rich.progress import track
+from time import sleep
+
+
+def clear(): 
+    try:
+        return os.system('clear')
+    except:
+        return os.system('cls')
 
 while True:
+    clear()
     print("\n+-------------------------------------------+")
     print("|         DISQUERÍA FORMOSA MUSICAL         |")
     print("+-------------------------------------------+\n")
@@ -14,12 +25,20 @@ while True:
     print("6 - SALIR")
     print("\n")
     opcion = int(input("Ingrese su opción: "))
+     
+    clear()
 
     if opcion == 1:
         controlador.InsertarAlbum()
     elif opcion == 2:
+        for step in track(range(100), description="[blue]Procesando..."):
+            sleep(0.01)
+        clear()
         controlador.ListarAlbumesPorArtistas()
     elif opcion == 3:
+        for step in track(range(100), description="[blue]Procesando..."):
+            sleep(0.01)
+        clear()
         controlador.ListarAlbumesPorGenero()
     elif opcion == 4:
         None

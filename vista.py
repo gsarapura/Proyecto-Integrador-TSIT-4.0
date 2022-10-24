@@ -1,7 +1,17 @@
 import controlador
+# Módulos externos
+import os
 from rich.console  import Console
+from rich.progress import track
+from time import sleep 
 
 console = Console(width=80)
+
+def clear():
+    try:
+        return os.system('clear')
+    except:
+        return os.system('cls')
 
 def vista_abm():
     while True:
@@ -32,6 +42,8 @@ def vista_abm():
             print("¡Opción incorrecta!")
         
 while True:
+    clear()
+
     console.rule("", style="bold gold3")
     console.print("DISQUERÍA FORMOSA MUSICAL", justify="center", style="bold white on deep_sky_blue4")
     console.rule("", style="bold gold3")
@@ -42,18 +54,26 @@ while True:
     console.print("4 - [bold]BÚSQUEDA POR NOMBRE DE ÁLBUM[/]")
     console.print("5 - [bold]INSERTAR INTERPRETE[/]") # EXTRA
     console.print("6 - [bold italic red]SALIR[/]\n")
-    
+
     try:
         opcion = int(console.input("[i]Ingrese su [bold cyan]opción[/][/i] :smiley:: ")) 
     except ValueError:
         console.print("[i]Ingrese solo [bold gold3]números[/], por favor[/i] :confused:.")
         continue 
+    
+    clear()
 
     if opcion == 1:
         vista_abm()
     elif opcion == 2:
+        for step in track(range(100), description="[blue]Procesando"):
+            sleep(0.01)
+        clear()
         controlador.ListarAlbumesPorArtistas()
     elif opcion == 3:
+        for step in track(range(100), description="[blue]Procesando"):
+            sleep(0.01)
+        clear()
         controlador.ListarAlbumesPorGenero()
     elif opcion == 4:
         None

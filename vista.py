@@ -6,9 +6,9 @@ from time import sleep
 
 def clear(): 
     try:
-        return os.system('clear')
-    except:
         return os.system('cls')
+    except:
+        return os.system('clear')
 
 while True:
     clear()

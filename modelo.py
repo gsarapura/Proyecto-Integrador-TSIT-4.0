@@ -170,9 +170,9 @@ class Conectar():
                 cursor = self.conexion.cursor()
                 sentenciaSQL = "SELECT * FROM album as a WHERE a.nombre=values(null,%s)"
 
-                data = (nombre)
+                busqueda = (nombre)
 
-                cursor.execute(sentenciaSQL,data)
+                cursor.execute(sentenciaSQL,busqueda)
 
                 self.conexion.commit()
                 self.conexion.close()

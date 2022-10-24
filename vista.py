@@ -13,8 +13,19 @@ def clear():
     except:
         return os.system('cls')
 
+def barra_progreso():
+    for step in track(range(100), description="[blue]Procesando"):
+            sleep(0.01)
+    clear()
+
 def vista_abm():
+    # Bandera:
+    incorrecto_abm = 0
+    valuerror_abm = 0
+    
     while True:
+        clear()
+
         console.rule("", style="bold gold3")
         console.print("DISQUERÍA FORMOSA MUSICAL", justify="center", style="bold white on deep_sky_blue4")
         console.rule("", style="bold gold3")
@@ -25,21 +36,36 @@ def vista_abm():
         console.print("4 - [bold italic red]SALIR[/]\n")
         
         try:
+            if incorrecto_abm == 1:
+                console.print("[i]¡Opción [bold red]incorrecta[/]![/i] :flushed:")
+            if valuerror_abm == 1:
+                console.print("[i]Ingrese solo [bold gold3]números[/], por favor[/i] :confused:.")
             opcion = int(console.input("[i]Ingrese su [bold cyan]opción[/][/i] :smiley:: ")) 
+            assert opcion <= 6
         except ValueError:
-            console.print("[i]Ingrese solo [bold gold3]números[/], por favor[/i] :confused:.")
-            continue 
+            valuerror_abm = 1
+            incorrecto_abm = 0 
+            continue
+        except AssertionError:
+            incorrecto_abm = 1
+            valuerror_abm = 0
+            continue
+        
         if opcion == 1:
+            barra_progreso()
             controlador.InsertarAlbum()
         elif opcion == 2:
+            barra_progreso()
             controlador.ListarAlbumesPorArtistas()
         elif opcion == 3:
             controlador.ListarAlbumesPorGenero()
         elif opcion == 4:
             print("")
             break
-        else:
-            print("¡Opción incorrecta!")
+        # Resetear bandera para el regreso:
+        incorrecto_abm = 0
+        valuerror_abm = 0
+        
 # Es un "parche". Necesita mejora.
 valuerror = 0    
 incorrecto = 0
@@ -77,14 +103,10 @@ while True:
     if opcion == 1:
         vista_abm()
     elif opcion == 2:
-        for step in track(range(100), description="[blue]Procesando"):
-            sleep(0.01)
-        clear()
+        barra_progreso()
         controlador.ListarAlbumesPorArtistas()
     elif opcion == 3:
-        for step in track(range(100), description="[blue]Procesando"):
-            sleep(0.01)
-        clear()
+        barra_progreso()
         controlador.ListarAlbumesPorGenero()
     elif opcion == 4:
         None

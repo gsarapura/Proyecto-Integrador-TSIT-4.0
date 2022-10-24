@@ -19,7 +19,8 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero ORDER By interprete.apellido desc"
+                senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero and album.vigente = 1 ORDER By interprete.apellido desc"
+                # el vigente = 1 es para que no me traiga los que estan eliminados
                 cursor.execute(senteciaSQL)
                 resultados = cursor.fetchall()
                 self.conexion.close()
@@ -27,12 +28,13 @@ class Conectar():
 
 
             except mysql.connector.Error as descripcionError:
-                print("¡No se conectó!",descripcionError)
+                print("¡Error al buscar!",descripcionError)
     def ListarPorGenero(self):
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero ORDER By genero.nombre asc"
+                senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero and album.vigente = 1 ORDER By genero.nombre asc"
+                # el vigente = 1 es para que no me traiga los que estan eliminados
                 cursor.execute(senteciaSQL)
                 resultados = cursor.fetchall()
                 #self.conexion.close()
@@ -40,28 +42,28 @@ class Conectar():
 
 
             except mysql.connector.Error as descripcionError:
-                print("¡No se conectó!",descripcionError)
+                print("¡Error al buscar!",descripcionError)
 
     def ListarInterprete(self):
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sentenciaSQL = "SELECT * from interprete"
+                sentenciaSQL = "SELECT * from interprete where vigente = 1" # el 1 espara que no me tragia los que estan eliminados
                 cursor.execute(sentenciaSQL)
                 resultados = cursor.fetchall()
                 #self.conexion.close()
                 return resultados
 
             except mysql.connector.Error as descripcionError:
-                print("¡No se conectó!",descripcionError)
+                print("¡Error al buscar!",descripcionError)
 
-    def InsertarInterprete(self,nombre,apellido,nacionalidad,foto):
+    def InsertarInterprete(self,interprete):
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sentenciaSQL = "INSERT into interprete values(null,%s,%s,%s,%s)"
+                sentenciaSQL = "INSERT into interprete values(null,%s,%s,%s,%s,1)"
 
-                data = (nombre,apellido,nacionalidad,foto)
+                data = (interprete.getnombre(),interprete.getapellido(),interprete.getnacionalidad(),interprete.getfoto())
 
                 cursor.execute(sentenciaSQL,data)
 
@@ -70,7 +72,56 @@ class Conectar():
                 print("Intérprete insertado correctamente")
 
             except mysql.connector.Error as descripcionError:
-                print("¡No se conectó!",descripcionError)
+                print("Error al Guardar!",descripcionError)
+
+    def ModificarInterprete(self,interprete):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                sentenciaSQL = "update interprete set nombre = %s, apellido = %s, nacionalidad = %s, foto = %s where id_interprete = %s"
+
+                data = (interprete.getnombre(),interprete.getapellido(),interprete.getnacionalidad(),interprete.getfoto(),interprete.getid_interprete())
+
+                cursor.execute(sentenciaSQL,data)
+
+                self.conexion.commit()
+                self.conexion.close()
+                print("Intérprete modificado correctamente")
+
+            except mysql.connector.Error as descripcionError:
+                print("Error al Guardar!",descripcionError)
+    
+    def EliminarInterprete(self,id_interprete):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                revisoAlbumsSQL = "select * from album where id_interprete = %s and vigente = 1"
+                cursor.execute(revisoAlbumsSQL,(id_interprete,))
+                if cursor.rowcount > 0:
+                    print("No se puede eliminar el interprete porque hay albunes y temas asociados a ese id")
+                    option = input("¿Desea dar de baja los albunes y temas asociados a ese intérprete? Si/No: ")
+                    if option == "si" or option == "SI" or option == "Si":
+                        sentenciaSQL = "update album set vigente = 0 where id_interprete = %s;update tema set vigente = 0 where id_album in (select id_album from album where id_interprete = %s)"
+                        cursor.execute(sentenciaSQL,(id_interprete,))
+                        self.conexion.commit()
+                        self.conexion.close()
+                        print("Albunes eliminados correctamente")
+                    else:
+                        self.conexion.commit()
+                        self.conexion.close()
+                else:
+                    sentenciaSQL = "update interprete set vigente = 0 where id_interprete = %s"
+                    #El 0 es para darlo de baja de manera lógica
+                    data = (id_interprete,)
+
+                    cursor.execute(sentenciaSQL,data)
+
+                    self.conexion.commit()
+                    self.conexion.close()
+                    print("Intérprete eliminado correctamente")
+
+            except mysql.connector.Error as descripcionError:
+                print("Error al Eliminar!",descripcionError)
 
     def InsertarGenero(self,nombre):
         if self.conexion.is_connected():
@@ -87,13 +138,13 @@ class Conectar():
                 print("Género insertado correctamente")
 
             except mysql.connector.Error as descripcionError:
-                print("¡No se conectó!",descripcionError)
+                print("Error al Guardar!",descripcionError)
 
     def InsertarAlbum(self,album):
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sentenciaSQL = "insert into album values (null,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+                sentenciaSQL = "insert into album values (null,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,1);"
 
                 data = (album.getCod_album(),
                 album.getNombre(),
@@ -114,7 +165,7 @@ class Conectar():
                 print("Álbum insertado correctamente")
 
             except mysql.connector.Error as descripcionError:
-                print("¡No se conectó!",descripcionError)
+                print("Error al Guardar!",descripcionError)
 
     
     def ModificarAlbum(self,album):
@@ -142,84 +193,101 @@ class Conectar():
                 print("Álbum modificado correctamente")
 
             except mysql.connector.Error as descripcionError:
-                print("¡No se conectó!",descripcionError)
+                print("¡Error al Guardar!",descripcionError)
     
     def EliminarAlbum(self,cod_album):
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sentenciaSQL = "DELETE FROM album WHERE cod_album = %s"
+                revisoTemasSQL = "select * from tema where id_album = %s and vigente = 1"
+                cursor.execute(revisoTemasSQL,(cod_album,))
+                if cursor.rowcount > 0:
+                    print("No se puede eliminar el album porque hay temas asociados a ese id")
+                    option = input("¿Desea dar de baja los temas asociados a ese album? Si/No: ")
+                    if option == "si" or option == "SI" or option == "Si":
+                        sentenciaSQL = "update tema set vigente = 0 where id_album = %s"
+                        cursor.execute(sentenciaSQL,(cod_album,))
+                        self.conexion.commit()
+                        self.conexion.close()
+                        print("Temas eliminados correctamente")
+                        return
+                    else:
+                        self.conexion.commit()
+                        self.conexion.close()
+                        return
+                else:
+                    sentenciaSQL = "UPDATE  album set vigente = 0 WHERE cod_album = %s" #Al poner el vigente en 0 lo elimino de manera lógica, yaque los select filtrarán por vigente = 1
 
-                data = (cod_album,)
+                    data = (cod_album,)
 
-                cursor.execute(sentenciaSQL,data)
+                    cursor.execute(sentenciaSQL,data)
 
-                self.conexion.commit()
-                self.conexion.close()
-                print("Álbum eliminado correctamente")
+                    self.conexion.commit()
+                    self.conexion.close()
+                    print("Álbum eliminado correctamente")
 
             except mysql.connector.Error as descripcionError:
-                print("¡No se conectó!",descripcionError)
+                print("¡Error al Eliminar!",descripcionError)
     
     def ListarTema(self):
         
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sentenciaSQL = "SELECT * from tema"
+                sentenciaSQL = "SELECT * from tema where vigente = 1" # el 1 espara que no me tragia los que estan eliminados
                 cursor.execute(sentenciaSQL)
                 resultados = cursor.fetchall()
                 self.conexion.close()
                 return resultados
             except mysql.connector.Error as descripcionError:
-                print("¡No se conectó!",descripcionError)
+                print("¡Error al Buscar!",descripcionError)
 
     def ListarGenero(self):
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sentenciaSQL = "SELECT * from genero"
+                sentenciaSQL = "SELECT * from genero where vigente = 1" # el 1 espara que no me tragia los que estan eliminados
                 cursor.execute(sentenciaSQL)
                 resultados = cursor.fetchall()
                 #self.conexion.close()
                 return resultados
             except mysql.connector.Error as descripcionError:
-                print("¡No se conectó!",descripcionError)
+                print("¡Error al Buscar!",descripcionError)
 
     def ListarDiscografica(self):
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sentenciaSQL = "SELECT * from discografica"
+                sentenciaSQL = "SELECT * from discografica where vigente = 1" # el 1 espara que no me tragia los que estan eliminados
                 cursor.execute(sentenciaSQL)
                 resultados = cursor.fetchall()
                 #self.conexion.close()
                 return resultados
             except mysql.connector.Error as descripcionError:
-                print("¡No se conectó!",descripcionError)
+                print("¡Error al Buscar!",descripcionError)
 
     def ListarFormato(self):
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sentenciaSQL = "SELECT * from formato"
+                sentenciaSQL = "SELECT * from formato where vigente = 1" # el 1 espara que no me tragia los que estan eliminados
                 cursor.execute(sentenciaSQL)
                 resultados = cursor.fetchall()
                 #self.conexion.close()
                 return resultados
             except mysql.connector.Error as descripcionError:
-                print("¡No se conectó!",descripcionError)
+                print("¡Error al Buscar!",descripcionError)
 
 #------------------------------------------------------------------------------------------------------
 class Interprete():     
 
-    def __init__(self,id_interprete,nombre,apellido,nacionalidad,foto) -> None:
+    def __init__(self,id_interprete,nombre,apellido,nacionalidad,foto,vigente) -> None:
         self.id_interprete = id_interprete
         self.nombre = nombre
         self.apellido = apellido
         self.nacionalidad = nacionalidad
         self.foto = foto
-
+        self.vigente = vigente
     def getId_Interprete(self):
         return self.id_interprete
     def getNombre(self):
@@ -248,10 +316,10 @@ class Interprete():
 #---------------------------------------------------------------------------------------
 
 class Genero():
-    def __init__(self,id_genero,nombre) -> None:
+    def __init__(self,id_genero,nombre,vigente) -> None:
         self.id_genero = id_genero
         self.nombre = nombre
-
+        self.vigente = vigente
     def __str__(self) -> str:
         return str(self.id_genero)+' '+self.nombre
 
@@ -269,9 +337,10 @@ class Genero():
 #---------------------------------------------------------------------------------------
 
 class Discografica():
-    def __init__(self,id_discografica,nombre) -> None:
+    def __init__(self,id_discografica,nombre,vigente) -> None:
         self.id_discografica = id_discografica
         self.nombre = nombre
+        self.vigente = vigente
 
     def __str__(self) -> str:
         return str(self.id_discografica)+' '+self.nombre
@@ -290,9 +359,10 @@ class Discografica():
 #---------------------------------------------------------------------------------------
 
 class Formato():
-    def __init__(self,id_formato,tipo) -> None:
+    def __init__(self,id_formato,tipo,vigente) -> None:
         self.id_formato = id_formato
         self.tipo = tipo
+        self.vigente = vigente
 
     def __str__(self) -> str:
         return str(self.id_formato)+' '+self.tipo
@@ -301,16 +371,19 @@ class Formato():
         return self.id_formato
     def getTipo(self):
         return self.tipo
+    def getVigente(self):
+        return self.vigente
 
     def setId_formato(self,id_formato):
         self.id_formato = id_formato
     def setTipo(self,tipo):
         self.tipo = tipo
-
+    def setVigente(self,vigente):
+        self.vigente = vigente
 #---------------------------------------------------------------------------------------
 
 class Tema():
-    def __init__(self,id_tema,titulo,duracion,autor,compositor,cod_album,id_interprete) -> None:
+    def __init__(self,id_tema,titulo,duracion,autor,compositor,cod_album,id_interprete,vigente) -> None:
         self.id_tema = id_tema
         self.titulo = titulo
         self.duracion = duracion
@@ -318,6 +391,7 @@ class Tema():
         self.compositor = compositor
         self.cod_album = cod_album
         self.id_interprete = id_interprete
+        self.vigente = vigente
 
     def getId_tema(self):
         return self.id_tema
@@ -333,6 +407,8 @@ class Tema():
         return self.cod_album
     def getId_interprete(self):
         return self.id_interprete
+    def getVigente(self):
+        return self.vigente
 
     def setId_tema(self,id_tema):
         self.id_tema = id_tema
@@ -348,16 +424,19 @@ class Tema():
         self.cod_album = cod_album
     def setId_interprete(self,id_interprete):
         self.id_interprete = id_interprete
+    def setVigente(self,vigente):
+        self.vigente = vigente
+
 
     def __str__(self) -> str:
-        return str(self.id_tema)+' '+self.titulo+' '+str(self.duracion)+' '+self.autor+' '+self.compositor+' '+str(self.cod_album)+' '+str(self.id_interprete)
+        return str(self.id_tema)+' '+self.titulo+' '+str(self.duracion)+' '+self.autor+' '+self.compositor+' '+str(self.cod_album)+' '+str(self.id_interprete)+ ' '+str(self.vigente)
     
 
 
 #---------------------------------------------------------------------------------------
 
 class Album():
-    def __init__(self,id_album,cod_album,nombre,id_interprete,id_genero,cant_temas,id_discografica,id_formato,fec_lanzamiento,precio,cantidad,caratula) -> None:
+    def __init__(self,id_album,cod_album,nombre,id_interprete,id_genero,cant_temas,id_discografica,id_formato,fec_lanzamiento,precio,cantidad,caratula,vigente) -> None:
         self.id_album = id_album
         self.cod_album = cod_album
         self.nombre = nombre
@@ -370,7 +449,7 @@ class Album():
         self.precio = precio
         self.cantidad = cantidad
         self.caratula = caratula
-
+        self.vigente = vigente
     def getId_album(self):
         return self.id_album
     def getCod_album(self):
@@ -395,6 +474,8 @@ class Album():
         return self.cantidad
     def getCaratula(self):
         return self.caratula
+    def getVigente(self):
+        return self.vigente
 
     def setId_album(self,id_album):
         self.id_album = id_album
@@ -420,15 +501,16 @@ class Album():
         self.cantidad = cantidad
     def setCaratula(self,caratula):
         self.caratula = caratula
-
+    def setVigente(self,vigente):
+        self.vigente = vigente
     def __str__(self) -> str:
-        return str(self.id_album) +' '+ str(self.cod_album) +' '+ self.nombre +' '+ str(self.id_interprete) +' '+ str(self.id_genero) +' '+ str(self.cant_temas) +' '+ str(self.id_discografica) +' '+ str(self.id_formato) +' '+ self.fec_lanzamiento +' '+ str(self.precio) +' '+ str(self.cantidad) +' '+ self.caratula
+        return str(self.id_album) +' '+ str(self.cod_album) +' '+ self.nombre +' '+ str(self.id_interprete) +' '+ str(self.id_genero) +' '+ str(self.cant_temas) +' '+ str(self.id_discografica) +' '+ str(self.id_formato) +' '+ self.fec_lanzamiento +' '+ str(self.precio) +' '+ str(self.cantidad) +' '+ self.caratula + ' ' + str(self.vigente)
 
     
 
     #---------------------------------------------------------------------------------------------------------
 
-AComoAmor = Album(0,456783,'A Como Amor',3,5,10,5,3,'1978-01-01',899.99,3,'')
+AComoAmor = Album(0,456783,'A Como Amor',3,5,10,5,3,'1978-01-01',899.99,3,'',1)
 
 #con = Conectar()
 #con.InsertarAlbum(AComoAmor)

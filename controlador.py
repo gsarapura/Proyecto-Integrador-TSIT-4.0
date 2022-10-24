@@ -64,8 +64,10 @@ def InsertarAlbum():
     input("Presione ENTER para continuar")
 
 def ModificarAlbum():
+    ListarAlbumesPorArtistas()
     cod_album = int(input("\nIngrese el código del Álbum que quiere modificar: "))
-    nombre = input("Ingrese el nombre del álbum: ")
+
+    nombre = input("Ingrese el nuevo nombre del álbum: ")
 
     # Hay que tener los siguientes datos ya dentro de la base:
     con = modelo.Conectar()
@@ -108,4 +110,43 @@ def EliminarAlbum():
     cod_album = int(input("\nIngrese el código del Álbum que quiere eliminar: "))
     con = modelo.Conectar()
     con.EliminarAlbum(cod_album)
+    input("Presione ENTER para continuar")
+
+
+
+def InsertarInterprete():
+    con = modelo.Conectar()
+    print("Estos son los Intérpretes vigentes actualmente:")
+    for i in con.ListarInterprete():
+        print(i)
+    nombre = input("\nIngrese el nombre del Intérprete: ")
+    apellido = input("Ingrese el apellido del Intérprete: ")
+    nacionalidad = input("Ingrese la nacionalidad del Intérprete: ")
+    foto = input("Ingrese la dirección web de la foto del Intérprete: ")
+    nuevoInterprete = modelo.Interprete(0,nombre,apellido,nacionalidad,foto,1)#El 1 es para darlo de alta en vigente. Si el vigente es 0 (false) no se mostrará.
+    con = modelo.Conectar()
+    con.InsertarInterprete(nuevoInterprete)
+    input("Presione ENTER para continuar")
+
+def ModificarInterprete():
+    con = modelo.Conectar()
+    for i in con.ListarInterprete():
+        print(i)
+    id_interprete = int(input("\nIngrese el ID del Intérprete que quiere modificar: "))
+    nombre = input("Ingrese el nuevo nombre del Intérprete: ")
+    apellido = input("Ingrese el nuevo apellido del Intérprete: ")
+    nacionalidad = input("Ingrese la nueva nacionalidad del Intérprete: ")
+    foto = input("Ingrese la nueva dirección web de la foto del Intérprete: ")
+    nuevoInterprete = modelo.Interprete(id_interprete,nombre,apellido,nacionalidad,foto,1)#el 1 es para que no se elimine... mantenerlo vigente
+    con = modelo.Conectar()
+    con.ModificarInterprete(nuevoInterprete)
+    input("Presione ENTER para continuar")
+
+def EliminarInterprete():
+    con = modelo.Conectar()
+    for i in con.ListarInterprete():
+        print(i)
+    id_interprete = int(input("\nIngrese el ID del Intérprete que quiere eliminar: "))
+    con = modelo.Conectar()
+    con.EliminarInterprete(id_interprete)
     input("Presione ENTER para continuar")

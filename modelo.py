@@ -164,6 +164,24 @@ class Conectar():
             except mysql.connector.Error as descripcionError:
                 print("¡No se conectó!",descripcionError)
 
+    def ListarBusquedaNombreAlbum(self,nombre):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                sentenciaSQL = "SELECT * FROM album as a WHERE a.nombre=values(null,%s)"
+
+                data = (nombre)
+
+                cursor.execute(sentenciaSQL,data)
+
+                self.conexion.commit()
+                self.conexion.close()
+
+            except mysql.connector.Error as descripcionError:
+                print("¡Ha ocurrido un error! Intente nuevamente.",descripcionError)
+
+
+
 #------------------------------------------------------------------------------------------------------
 class Interprete():     
 

@@ -22,7 +22,7 @@ while True:
     elif opcion == 3:
         controlador.ListarAlbumesPorGenero()
     elif opcion == 4:
-        None
+        controlador.ListarBusquedaNombreAlbum()
     elif opcion == 5:
         None
     elif opcion == 6:

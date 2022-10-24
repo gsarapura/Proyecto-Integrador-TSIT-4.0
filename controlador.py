@@ -59,14 +59,10 @@ def InsertarAlbum():
     input("Presione ENTER para continuar")
 
 def ListarBusquedaNombreAlbum():
-    con = modelo.Conectar()
     busqueda = input("Ingrese el nombre del álbum que desea buscar: ")
     table=Table(title="Albumes coincidentes: ")
-    
-    for album in coincidencias:
-        table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]))
-    
-    coincidencias = con.ListarBusquedaNombreAlbum()
+    con = modelo.Conectar()
+    listado = con.ListarBusquedaNombreAlbum()
     table.add_column("COD. ÁLBUM", style="cyan")
     table.add_column("NOMBRE", style="cyan")
     table.add_column("INTÉRPRETE", style="cyan")
@@ -75,6 +71,8 @@ def ListarBusquedaNombreAlbum():
     table.add_column("PRECIO", style="cyan")
     table.add_column("CANTIDAD", style="cyan")
     table.add_column("FORMATO", style="cyan")
-
+    
+    for album in listado:
+        table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]))
     console = Console()
     console.print(table)

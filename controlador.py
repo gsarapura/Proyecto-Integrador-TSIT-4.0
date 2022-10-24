@@ -34,8 +34,19 @@ def InsertarAlbum():
 
     for i in con.ListarInterprete():
         print(i)
+    print("\n")
+    print("En caso de que el Intérprete no esté en la lista, ingrese 0 para agregarlo.")  
+  
     id_interprete = int(input("\nIngrese el ID del Intérprete: "))
-    
+    if id_interprete == 0:
+        nombre = input("Ingrese el nombre del Intérprete: ")
+        apellido = input("Ingrese el apellido del Intérprete: ")
+        nacionalidad = input("Ingrese la nacionalidad del Intérprete: ")
+        foto = input("Ingrese la dirección web de la foto del Intérprete: ")
+        nuevoInterprete = modelo.Interprete(0,nombre,apellido,nacionalidad,foto,1)
+        con.InsertarInterprete(nuevoInterprete)
+        id_interprete = con.ObtenerIDGenerado()
+        print("El ID del Intérprete es: ",id_interprete)  
     print("\nGénero")
     for g in con.ListarGenero():
         print(g)

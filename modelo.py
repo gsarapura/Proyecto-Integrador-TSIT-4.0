@@ -15,12 +15,24 @@ class Conectar():
         except mysql.connector.Error as descripcionError:
             print("¡No se conectó!",descripcionError)
     
+    def ObtenerIDGenerado(self):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                sentenciaSQL = "SELECT @@identity as id"
+                cursor.execute(sentenciaSQL)
+                resultado = cursor.fetchall()
+                self.conexion.close()
+                return resultado[0][0]
+            except mysql.connector.Error as descripcionError:
+                print("Error al obtener el ID generado!",descripcionError)
+
     def ListarAlbumes(self):
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
                 senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero and album.vigente = 1 ORDER By interprete.apellido desc"
-                # el vigente = 1 es para que no me traiga los que estan eliminados
+                # el vigente = 1 es para que no me traiga los que estan eliminados (vigente = 0)
                 cursor.execute(senteciaSQL)
                 resultados = cursor.fetchall()
                 self.conexion.close()
@@ -195,7 +207,7 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sentenciaSQL = "UPDATE album SET nombre = %s, id_interprete = %s, id_genero = %s, cant_temas = %s, id_discografica = %s, id_formato = %s, fec_lanzamiento = %s, precio = %s, cantidad = %s, caratula = %s WHERE cod_album = %s"
+                sentenciaSQL = "UPDATE album SET nombre = %s, id_interprete = %s, id_genero = %s, cant_temas = %s, id_discografica = %s, id_formato = %s, fec_lanzamiento = %s, precio = %s, cantidad = %s, caratula = %s WHERE cod_album = %s vigente = 1"
 
                 data = (album.getNombre(),
                 album.getId_interprete(),
@@ -222,7 +234,7 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                revisoTemasSQL = "select * from tema where id_album = %s and vigente = 1"
+                revisoTemasSQL = "select * from tema where cod_album = %s and vigente = 1"
                 cursor.execute(revisoTemasSQL,(cod_album,))
                 resultado = cursor.fetchall()
                 if len(resultado) > 0:
@@ -230,8 +242,9 @@ class Conectar():
                     for i in resultado:
                         print(i)
                     option = input("¿Desea dar de baja los temas asociados a ese album? Si/No: ")
-                    if option == "si" or option == "SI" or option == "Si":
-                        sentenciaSQL = "update tema set vigente = 0 where id_album = %s"
+                    option = option.lower()
+                    if option == "si":
+                        sentenciaSQL = "update tema set vigente = 0 where cod_album = %s"
                         cursor.execute(sentenciaSQL,(cod_album,))
                         self.conexion.commit()
                         self.conexion.close()
@@ -242,7 +255,8 @@ class Conectar():
                         self.conexion.close()
                         return
                 else:
-                    sentenciaSQL = "UPDATE  album set vigente = 0 WHERE cod_album = %s" #Al poner el vigente en 0 lo elimino de manera lógica, yaque los select filtrarán por vigente = 1
+                    sentenciaSQL = "UPDATE  album set vigente = 0 WHERE cod_album = %s" 
+                    #Al poner el vigente en 0 lo elimino de manera lógica, yaque los select filtrarán por vigente = 1
 
                     data = (cod_album,)
 

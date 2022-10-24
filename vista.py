@@ -40,9 +40,9 @@ def vista_abm():
             break
         else:
             print("¡Opción incorrecta!")
-# MMMM es un parche. Necesita mejora.
-valuerror = 2    
-incorrecto = 2
+# Es un "parche". Necesita mejora.
+valuerror = 0    
+incorrecto = 0
 
 while True:
     clear()
@@ -56,25 +56,24 @@ while True:
     console.print("3 - [bold]LISTADO DE ÁLBUMES POR GÉNERO MUSICAL[/]")
     console.print("4 - [bold]BÚSQUEDA POR NOMBRE DE ÁLBUM[/]")
     console.print("5 - [bold]INSERTAR INTERPRETE[/]") # EXTRA
-    console.print("6 - [bold italic red]SALIR[/]\n")
-
-    
+    console.print("6 - [bold italic red]SALIR[/]\n")    
 
     try:
-        if valuerror == 1:
-            console.print("[i]Ingrese solo [bold gold3]números[/], por favor[/i] :confused:.")
-            incorrecto = 0
         if incorrecto == 1:
             console.print("[i]¡Opción [bold red]incorrecta[/]![/i] :flushed:")
-            #valuerror = 0
+        if valuerror == 1:
+            console.print("[i]Ingrese solo [bold gold3]números[/], por favor[/i] :confused:.")
         opcion = int(console.input("[i]Ingrese su [bold cyan]opción[/][/i] :smiley:: ")) 
+        assert opcion <= 6
     except ValueError:
         valuerror = 1
-        continue 
+        incorrecto = 0 
+        continue
+    except AssertionError:
+        incorrecto = 1
+        valuerror = 0
+        continue
     
-    valuerror = 0
-    incorrecto = 0
-
     if opcion == 1:
         vista_abm()
     elif opcion == 2:
@@ -94,5 +93,7 @@ while True:
     elif opcion == 6:
         console.print("\n[italic bold]¡[gold1]Gracias[/], nos vemos![/] :sunglasses:\n")
         break
-    else:
-        incorrecto = 1
+
+    # Resetear bandera para el regreso:
+    incorrecto = 0
+    valuerror = 0

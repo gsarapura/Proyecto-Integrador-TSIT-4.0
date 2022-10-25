@@ -73,12 +73,12 @@ def ABMInterprete():
 
         if opcion == 1:
             barra_progreso()
-            controlador.InsertarAlbum()
+            controlador.InsertarInterprete()
         elif opcion == 2:
             barra_progreso()
-            controlador.ListarAlbumesPorArtistas()
+            controlador.ModificarInterprete()
         elif opcion == 3:
-            controlador.ListarAlbumesPorGenero()
+            controlador.EliminarInterprete()
         elif opcion == 4:
             print("")
             break
@@ -139,9 +139,9 @@ def ABMAlbum():
             controlador.InsertarAlbum()
         elif opcion == 2:
             barra_progreso()
-            controlador.ListarAlbumesPorArtistas()
+            controlador.EliminarAlbum()
         elif opcion == 3:
-            controlador.ListarAlbumesPorGenero()
+            controlador.ModificarAlbum()
         elif opcion == 4:
             print("")
             break

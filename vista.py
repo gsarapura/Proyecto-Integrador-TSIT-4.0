@@ -35,14 +35,14 @@ def ABMInterprete():
         console.print("DISQUERÍA FORMOSA MUSICAL", justify="center", style="bold white on deep_sky_blue4")
         console.rule("", style="bold gold3")
 
-        tabla_principal = Table(box=box.ROUNDED, show_header=False, style="bold chartreuse3")
-        tabla_principal.add_row("[bold chartreuse3]MENÚ ABM")
+        tabla_principal = Table(box=box.ROUNDED, show_header=False, style="bold purple")
+        tabla_principal.add_row("[bold purple]ABM INTÉRPRETE")
         console.print(Align.center(tabla_principal))
 
         tabla_opcion = Table(expand=True, style="orange_red1", box=box.DOUBLE_EDGE, show_header=False)
-        tabla_opcion.add_row("[cyan bold]1[/] - [bold]ALTA DE ÁLBUM[/]")
-        tabla_opcion.add_row("[cyan bold]2[/] - [bold]BAJA DE ÁLBUM[/]")
-        tabla_opcion.add_row("[cyan bold]3[/] - [bold]MODIFICACIÓN DE ÁLBUM[/]")
+        tabla_opcion.add_row("[cyan bold]1[/] - [bold]ALTA DE INTÉRPRETE[/]")
+        tabla_opcion.add_row("[cyan bold]2[/] - [bold]BAJA DE INTÉRPRETE[/]")
+        tabla_opcion.add_row("[cyan bold]3[/] - [bold]MODIFICACIÓN DE INTÉRPRETE[/]")
         tabla_opcion.add_row("[cyan bold]4[/] - [bold italic red1]SALIR[/]") 
         console.print(tabla_opcion)
 
@@ -99,7 +99,7 @@ def ABMAlbum():
         console.rule("", style="bold gold3")
 
         tabla_principal = Table(box=box.ROUNDED, show_header=False, style="bold chartreuse3")
-        tabla_principal.add_row("[bold chartreuse3]MENÚ ABM")
+        tabla_principal.add_row("[bold chartreuse3]ABM ÁLBUM")
         console.print(Align.center(tabla_principal))
 
         tabla_opcion = Table(expand=True, style="orange_red1", box=box.DOUBLE_EDGE, show_header=False)
@@ -169,7 +169,7 @@ while True:
     tabla_opcion.add_row("[cyan bold]2[/] - [bold]LISTADO DE ÁLBUMES POR ARTISTAS[/]")
     tabla_opcion.add_row("[cyan bold]3[/] - [bold]LISTADO DE ÁLBUMES POR GÉNERO MUSICAL[/]")
     tabla_opcion.add_row("[cyan bold]4[/] - [bold]BÚSQUEDA POR NOMBRE DE ÁLBUM[/]")
-    tabla_opcion.add_row("[cyan bold]5[/] - [bold]INSERTAR INTERPRETE[/]") # EXTRA
+    tabla_opcion.add_row("[cyan bold]5[/] - [bold]ALTA, BAJA O MODIFICACIÓN DE INTÉRPRETE[/]") # EXTRA
     tabla_opcion.add_row("[cyan bold]6[/] - [bold italic red1]SALIR[/]") 
     console.print(tabla_opcion)
 

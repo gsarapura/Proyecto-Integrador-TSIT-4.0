@@ -8,7 +8,7 @@ class Conectar():
                 host = 'localhost',
                 port = 3306,
                 user = 'root',
-                password = '15963200',
+                password = '',
                 db = 'disqueria'
 
             )
@@ -32,25 +32,28 @@ class Conectar():
             try:
                 cursor = self.conexion.cursor()
                 senteciaSQL = "SELECT interprete.apellido, interprete.nombre, cod_album, album.nombre, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album INNER JOIN interprete ON album.id_interprete = interprete.id_interprete INNER JOIN discografica ON album.id_discografica = discografica.id_discografica INNER JOIN formato ON album.id_formato = formato.id_formato INNER JOIN genero ON album.id_genero = genero.id_genero where cantidad>0 ORDER By interprete.apellido, interprete.nombre, cod_album"
+                # Código Hernán:
+                # senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero and album.vigente = 1 ORDER By interprete.apellido desc"
+                # el vigente = 1 es para que no me traiga los que estan eliminados (vigente = 0)
                 cursor.execute(senteciaSQL)
                 resultados = cursor.fetchall()
                 self.conexion.close()
                 return resultados
-
-
             except mysql.connector.Error as descripcionError:
                 print("¡Error al buscar!",descripcionError)
+
     def ListarPorGenero(self):
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
                 senteciaSQL = "SELECT genero.nombre,cod_album, album.nombre, interprete.apellido, interprete.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album INNER JOIN interprete ON album.id_interprete = interprete.id_interprete INNER JOIN discografica ON album.id_discografica = discografica.id_discografica INNER JOIN formato ON album.id_formato = formato.id_formato INNER JOIN genero ON album.id_genero = genero.id_genero ORDER By genero.nombre asc, interprete.apellido, interprete.nombre"
+                # Código Hernán:
+                # senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero and album.vigente = 1 ORDER By genero.nombre asc"
+                # el vigente = 1 es para que no me traiga los que estan eliminados
                 cursor.execute(senteciaSQL)
                 resultados = cursor.fetchall()
                 #self.conexion.close()
                 return resultados
-
-
             except mysql.connector.Error as descripcionError:
                 print("¡Error al buscar!",descripcionError)
 
@@ -63,7 +66,6 @@ class Conectar():
                 resultados = cursor.fetchall()
                 #self.conexion.close()
                 return resultados
-
             except mysql.connector.Error as descripcionError:
                 print("¡Error al buscar!",descripcionError)
 
@@ -71,9 +73,42 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sentenciaSQL = "INSERT into interprete values(null,%s,%s,%s,%s)"
+                revisoExistenciaSQL = "SELECT * from interprete where nombre = %s and apellido = %s"
+                data = (interprete.getNombre(),interprete.getApellido())
+                cursor.execute(revisoExistenciaSQL,data)
+                resultado = cursor.fetchall()
+                if len(resultado) == 0:
+                    sentenciaSQL = "INSERT into interprete values(null,%s,%s,%s,%s,1)"
+                    data = (interprete.getNombre(),interprete.getApellido(),interprete.getNacionalidad(),interprete.getFoto())
+                    cursor.execute(sentenciaSQL,data)
+                    self.conexion.commit()
+                    self.conexion.close()
+                    print("Intérprete insertado correctamente")
+                else:
+                    print("El intérprete ya existe")
+                    option = input("¿Desea darlo de alta nuevamente? (Si/No): ")
+                    option = option.lower()
+                    if option == "si":
+                        sentenciaSQL = "update interprete set vigente = 1 where nombre = %s and apellido = %s"
+                        data = (interprete.getNombre(),interprete.getApellido())
+                        cursor.execute(sentenciaSQL,data)
+                        self.conexion.commit()
+                        self.conexion.close()
+                        print("Intérprete dado de alta nuevamente")
+                    else:
+                        print("Intérprete no dado de alta nuevamente")
+                        self.conexion.commit()
+                        self.conexion.close()
+            except mysql.connector.Error as descripcionError:
+                print("Error al Guardar!",descripcionError)
 
-                data = (interprete.getNombre(),interprete.getApellido(),interprete.getNacionalidad(),interprete.getFoto(),interprete.getId_interprete())
+    def ModificarInterprete(self,interprete):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                sentenciaSQL = "update interprete set nombre = %s, apellido = %s, nacionalidad = %s, foto = %s where id_interprete = %s"
+
+                data = (interprete.getNombre(),interprete.getApellido(),interprete.getNacionalidad(),interprete.getFoto(),interprete.getId_Interprete())
 
                 cursor.execute(sentenciaSQL,data)
 
@@ -83,7 +118,7 @@ class Conectar():
 
             except mysql.connector.Error as descripcionError:
                 print("Error al Guardar!",descripcionError)
-    
+
     def EliminarInterprete(self,id_interprete):
         if self.conexion.is_connected():
             try:

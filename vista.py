@@ -76,9 +76,10 @@ def ABMInterprete():
             controlador.InsertarInterprete()
         elif opcion == 2:
             barra_progreso()
-            controlador.ModificarInterprete()
-        elif opcion == 3:
             controlador.EliminarInterprete()
+        elif opcion == 3:
+            barra_progreso()
+            controlador.ModificarInterprete()
         elif opcion == 4:
             print("")
             break

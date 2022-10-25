@@ -21,11 +21,11 @@ def ListarAlbumesPorArtistas():
     input("Presione ENTER para continuar")
 
 def ListarAlbumesPorGenero():
-    con = modelo.Conectar()
+    con = modelo.Conectar() 
     listado = con.ListarPorGenero()
     
     table = Table(title="Álbumes por Género")
-    columnas = ["GÉNERO", "COD. ÁLBUM", "ÁLBUM", "NOMBRE ARTISTA", "APELLIDO ARTISTA", "DISCOGRÁFICA", "PRECIO", "CANTIDAD", "FORMATO"]
+    columnas = ["GÉNERO", "COD. ÁLBUM", "ÁLBUM", "APELLIDO ARTISTA", "NOMBRE ARTISTA", "DISCOGRÁFICA", "PRECIO", "CANTIDAD", "FORMATO"]
     for col in columnas:
         table.add_column(col, style="light_sea_green", justify="center")
     

@@ -31,8 +31,7 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero and album.vigente = 1 ORDER By interprete.apellido desc"
-                # el vigente = 1 es para que no me traiga los que estan eliminados (vigente = 0)
+                senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero ORDER By interprete.apellido desc"
                 cursor.execute(senteciaSQL)
                 resultados = cursor.fetchall()
                 self.conexion.close()
@@ -45,8 +44,7 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero and album.vigente = 1 ORDER By genero.nombre asc"
-                # el vigente = 1 es para que no me traiga los que estan eliminados
+                senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero ORDER By genero.nombre asc"
                 cursor.execute(senteciaSQL)
                 resultados = cursor.fetchall()
                 #self.conexion.close()
@@ -73,40 +71,7 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                revisoExistenciaSQL = "SELECT * from interprete where nombre = %s and apellido = %s"
-                data = (interprete.getNombre(),interprete.getApellido())
-                cursor.execute(revisoExistenciaSQL,data)
-                resultado = cursor.fetchall()
-                if len(resultado) == 0:
-                    sentenciaSQL = "INSERT into interprete values(null,%s,%s,%s,%s,1)"
-                    data = (interprete.getNombre(),interprete.getApellido(),interprete.getNacionalidad(),interprete.getFoto())
-                    cursor.execute(sentenciaSQL,data)
-                    self.conexion.commit()
-                    self.conexion.close()
-                    print("Intérprete insertado correctamente")
-                else:
-                    print("El intérprete ya existe")
-                    option = input("¿Desea darlo de alta nuevamente? (Si/No): ")
-                    option = option.lower()
-                    if option == "si":
-                        sentenciaSQL = "update interprete set vigente = 1 where nombre = %s and apellido = %s"
-                        data = (interprete.getNombre(),interprete.getApellido())
-                        cursor.execute(sentenciaSQL,data)
-                        self.conexion.commit()
-                        self.conexion.close()
-                        print("Intérprete dado de alta nuevamente")
-                    else:
-                        print("Intérprete no dado de alta nuevamente")
-                        self.conexion.commit()
-                        self.conexion.close()
-            except mysql.connector.Error as descripcionError:
-                print("Error al Guardar!",descripcionError)
-
-    def ModificarInterprete(self,interprete):
-        if self.conexion.is_connected():
-            try:
-                cursor = self.conexion.cursor()
-                sentenciaSQL = "update interprete set nombre = %s, apellido = %s, nacionalidad = %s, foto = %s where id_interprete = %s"
+                sentenciaSQL = "INSERT into interprete values(null,%s,%s,%s,%s)"
 
                 data = (interprete.getNombre(),interprete.getApellido(),interprete.getNacionalidad(),interprete.getFoto(),interprete.getId_interprete())
 

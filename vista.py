@@ -1,85 +1,220 @@
 import controlador
+## Módulos externos
+import os
+from rich.console  import Console
+# Crear tablas:
+from rich import box
+from rich.table import Table
+from rich.align import Align
+#Crear barra:
+from rich.progress import track
+from time import sleep 
 
+console = Console(width=100)
 
+def clear():
+    try:
+        return os.system('clear')
+    except:
+        return os.system('cls')
 
-def ABMAlbum():
-    while True:
-        print("\n+-------------------------------------------+")
-        print("|         DISQUERÍA FORMOSA MUSICAL         |")
-        print("+-------------------------------------------+\n")
-        print("")
-        print("MENÚ DE ALTA / BAJA / MODIFICACIÓN DE ÁLBUMES\n")
-        print("1 - NUEVO ÁLBUM")
-        print("2 - MODIFICAR ÁLBUM")
-        print("3 - ELIMINAR ÁLBUM")
-        print("4 - VOLVER AL MENÚ PRINCIPAL")
-        print("\n")
-        opcion = int(input("Ingrese su opción: "))
-
-        if opcion == 1:
-            controlador.InsertarAlbum()
-        elif opcion == 2:
-            controlador.ModificarAlbum()
-        elif opcion == 3:
-            controlador.EliminarAlbum()
-        elif opcion == 4:
-            break
-        else:
-            print("¡Opción incorrecta!")
-
+def barra_progreso():
+    for step in track(range(100), description="[blue]Procesando"):
+            sleep(0.01)
+    clear()
 
 def ABMInterprete():
+    # Bandera:
+    incorrecto_abm = 0
+    valuerror_abm = 0
+    
     while True:
-        print("\n+-------------------------------------------+")
-        print("|         DISQUERÍA FORMOSA MUSICAL         |")
-        print("+-------------------------------------------+\n")
-        print("")
-        print("MENÚ DE ALTA / BAJA / MODIFICACIÓN DE INTERPRETES\n")
-        print("1 - NUEVO INTERPRETE")
-        print("2 - MODIFICAR INTERPRETE")
-        print("3 - ELIMINAR INTERPRETE")
-        print("4 - VOLVER AL MENÚ PRINCIPAL")
-        print("\n")
-        opcion = int(input("Ingrese su opción: "))
+        clear()
+
+        console.rule("", style="bold gold3")
+        console.print("DISQUERÍA FORMOSA MUSICAL", justify="center", style="bold white on deep_sky_blue4")
+        console.rule("", style="bold gold3")
+
+        tabla_principal = Table(box=box.ROUNDED, show_header=False, style="bold chartreuse3")
+        tabla_principal.add_row("[bold chartreuse3]MENÚ ABM")
+        console.print(Align.center(tabla_principal))
+
+        tabla_opcion = Table(expand=True, style="orange_red1", box=box.DOUBLE_EDGE, show_header=False)
+        tabla_opcion.add_row("[cyan bold]1[/] - [bold]ALTA DE ÁLBUM[/]")
+        tabla_opcion.add_row("[cyan bold]2[/] - [bold]BAJA DE ÁLBUM[/]")
+        tabla_opcion.add_row("[cyan bold]3[/] - [bold]MODIFICACIÓN DE ÁLBUM[/]")
+        tabla_opcion.add_row("[cyan bold]4[/] - [bold italic red1]SALIR[/]") 
+        console.print(tabla_opcion)
+
+        try:
+            if incorrecto_abm == 1:
+                tabla_incorrecto = Table(expand=True, style="red1", box=box.ASCII, show_header=False)
+                tabla_incorrecto.add_row("[i]¡Opción [bold red1]incorrecta[/]![/i] :flushed:")
+                console.print(tabla_incorrecto)
+
+            if valuerror_abm == 1:
+                tabla_error = Table(expand=True, style="red1", box=box.ASCII, show_header=False)
+                tabla_error.add_row("[i]Ingrese solo [bold red1]números[/], por favor[/i] :confused:.")
+                console.print(tabla_error)
+            
+            tabla_op = Table(expand=True, style="cyan", box=box.ASCII2, show_header=False)
+            tabla_op.add_row("[i]Ingrese su [bold cyan]opción[/][/i] :smiley:: ")
+            console.print(tabla_op)
+            opcion = int(console.input("[bold cyan]>: "))
+            assert opcion <= 6
+        except ValueError:
+            valuerror_abm = 1
+            incorrecto_abm = 0 
+            continue
+        except AssertionError:
+            incorrecto_abm = 1
+            valuerror_abm = 0
+            continue 
 
         if opcion == 1:
-            controlador.InsertarInterprete()
+            barra_progreso()
+            controlador.InsertarAlbum()
         elif opcion == 2:
-            controlador.ModificarInterprete()
+            barra_progreso()
+            controlador.ListarAlbumesPorArtistas()
         elif opcion == 3:
-            controlador.EliminarInterprete()
+            controlador.ListarAlbumesPorGenero()
         elif opcion == 4:
+            print("")
             break
-        else:
-            print("¡Opción incorrecta!")
+        # Resetear bandera para el regreso:
+        incorrecto_abm = 0
+        valuerror_abm = 0
 
-         
+def ABMAlbum():
+    # Bandera:
+    incorrecto_abm = 0
+    valuerror_abm = 0
+    
+    while True:
+        clear()
+
+        console.rule("", style="bold gold3")
+        console.print("DISQUERÍA FORMOSA MUSICAL", justify="center", style="bold white on deep_sky_blue4")
+        console.rule("", style="bold gold3")
+
+        tabla_principal = Table(box=box.ROUNDED, show_header=False, style="bold chartreuse3")
+        tabla_principal.add_row("[bold chartreuse3]MENÚ ABM")
+        console.print(Align.center(tabla_principal))
+
+        tabla_opcion = Table(expand=True, style="orange_red1", box=box.DOUBLE_EDGE, show_header=False)
+        tabla_opcion.add_row("[cyan bold]1[/] - [bold]ALTA DE ÁLBUM[/]")
+        tabla_opcion.add_row("[cyan bold]2[/] - [bold]BAJA DE ÁLBUM[/]")
+        tabla_opcion.add_row("[cyan bold]3[/] - [bold]MODIFICACIÓN DE ÁLBUM[/]")
+        tabla_opcion.add_row("[cyan bold]4[/] - [bold italic red1]SALIR[/]") 
+        console.print(tabla_opcion)
+
+        try:
+            if incorrecto_abm == 1:
+                tabla_incorrecto = Table(expand=True, style="red1", box=box.ASCII, show_header=False)
+                tabla_incorrecto.add_row("[i]¡Opción [bold red1]incorrecta[/]![/i] :flushed:")
+                console.print(tabla_incorrecto)
+
+            if valuerror_abm == 1:
+                tabla_error = Table(expand=True, style="red1", box=box.ASCII, show_header=False)
+                tabla_error.add_row("[i]Ingrese solo [bold red1]números[/], por favor[/i] :confused:.")
+                console.print(tabla_error)
+            
+            tabla_op = Table(expand=True, style="cyan", box=box.ASCII2, show_header=False)
+            tabla_op.add_row("[i]Ingrese su [bold cyan]opción[/][/i] :smiley:: ")
+            console.print(tabla_op)
+            opcion = int(console.input("[bold cyan]>: "))
+            assert opcion <= 6
+        except ValueError:
+            valuerror_abm = 1
+            incorrecto_abm = 0 
+            continue
+        except AssertionError:
+            incorrecto_abm = 1
+            valuerror_abm = 0
+            continue 
+
+        if opcion == 1:
+            barra_progreso()
+            controlador.InsertarAlbum()
+        elif opcion == 2:
+            barra_progreso()
+            controlador.ListarAlbumesPorArtistas()
+        elif opcion == 3:
+            controlador.ListarAlbumesPorGenero()
+        elif opcion == 4:
+            print("")
+            break
+        # Resetear bandera para el regreso:
+        incorrecto_abm = 0
+        valuerror_abm = 0
+        
+# Es un "parche". Necesita mejora.
+valuerror = 0    
+incorrecto = 0
+
 while True:
-    print("\n+-------------------------------------------+")
-    print("|         DISQUERÍA FORMOSA MUSICAL         |")
-    print("+-------------------------------------------+\n")
-    print("")
-    print("MENÚ PRINCIPAL\n")
-    print("1 - ALTA / BAJA / MODIFICACION DE UN ÁLBUM")
-    print("2 - LISTADO DE ÁLBUMES POR ARTISTAS")
-    print("3 - LISTADO DE ÁLBUMES POR GÉNERO MUSICAL")
-    print("4 - BÚSQUEDA POR NOMBRE DE ÁLBUM")
-    print("5 - ALTA / BAJA / MODIFICACION DE UN INTERPRETE") # EXTRA
-    print("6 - SALIR")
-    print("\n")
-    opcion = int(input("Ingrese su opción: "))
+    clear()
 
+    console.rule("", style="bold gold3")
+    console.print("DISQUERÍA FORMOSA MUSICAL", justify="center", style="bold white on deep_sky_blue4")
+    console.rule("", style="bold gold3")
+
+    tabla_principal = Table(box=box.ROUNDED, show_header=False, style="bold gold3")
+    tabla_principal.add_row("[bold gold3]MENÚ PRINCIPAL")
+    console.print(Align.center(tabla_principal))
+
+    tabla_opcion = Table(expand=True, style="deep_sky_blue3", box=box.DOUBLE_EDGE, show_header=False)
+    tabla_opcion.add_row("[cyan bold]1[/] - [bold]ALTA, BAJA O MODIFICACIÓN DE UN ÁLBUM[/]")
+    tabla_opcion.add_row("[cyan bold]2[/] - [bold]LISTADO DE ÁLBUMES POR ARTISTAS[/]")
+    tabla_opcion.add_row("[cyan bold]3[/] - [bold]LISTADO DE ÁLBUMES POR GÉNERO MUSICAL[/]")
+    tabla_opcion.add_row("[cyan bold]4[/] - [bold]BÚSQUEDA POR NOMBRE DE ÁLBUM[/]")
+    tabla_opcion.add_row("[cyan bold]5[/] - [bold]INSERTAR INTERPRETE[/]") # EXTRA
+    tabla_opcion.add_row("[cyan bold]6[/] - [bold italic red1]SALIR[/]") 
+    console.print(tabla_opcion)
+
+    try:
+        if incorrecto == 1:
+            tabla_incorrecto = Table(expand=True, style="red1", box=box.ASCII, show_header=False)
+            tabla_incorrecto.add_row("[i]¡Opción [bold red1]incorrecta[/]![/i] :flushed:")
+            console.print(tabla_incorrecto)
+
+        if valuerror == 1:
+            tabla_error = Table(expand=True, style="red1", box=box.ASCII, show_header=False)
+            tabla_error.add_row("[i]Ingrese solo [bold red1]números[/], por favor[/i] :confused:.")
+            console.print(tabla_error)
+        
+        tabla_op = Table(expand=True, style="cyan", box=box.ASCII2, show_header=False)
+        tabla_op.add_row("[i]Ingrese su [bold cyan]opción[/][/i] :smiley:: ")
+        console.print(tabla_op)
+        opcion = int(console.input("[bold cyan]>: "))
+
+        assert opcion <= 6
+    except ValueError:
+        valuerror = 1
+        incorrecto = 0 
+        continue
+    except AssertionError:
+        incorrecto = 1
+        valuerror = 0
+        continue
+    
     if opcion == 1:
         ABMAlbum()
     elif opcion == 2:
+        barra_progreso()
         controlador.ListarAlbumesPorArtistas()
     elif opcion == 3:
+        barra_progreso()
         controlador.ListarAlbumesPorGenero()
     elif opcion == 4:
         None
     elif opcion == 5:
         ABMInterprete()
     elif opcion == 6:
+        console.print("\n[italic bold]¡[gold1]Gracias[/], nos vemos![/] :sunglasses:\n")
         break
-    else:
-        print("¡Opción incorrecta!")
+
+    # Resetear bandera para el regreso:
+    incorrecto = 0
+    valuerror = 0

@@ -1,19 +1,39 @@
 import modelo
+# Módulos externos:
+from rich.table import Table
+from rich.console import Console
+
 
 def ListarAlbumesPorArtistas():
     con = modelo.Conectar()
     listado = con.ListarAlbumes()
-    print("\n| COD. ÁLBUM   |          NOMBRE              |       INTERPRETE              |   GENERO   |     DISCOGRAFICA   |   PRECIO   |   CANTIDAD   |  FORMATO   |")
+    
+    table = Table(title="Álbumes por Artistas")
+    columnas = ["APELLIDO", "NOMBRE", "COD. ÁLBUM", "ÁLBUM", "GÉNERO", "DISCOGRÁFICA", "PRECIO", "CANTIDAD", "FORMATO"]
+    for col in columnas:
+        table.add_column(col, style="cyan", justify="center")
+    
     for album in listado:
-        print(' ',album[0],"\t",album[1],"\t\t",album[2]+' '+album[3],"\t\t  ",album[4],"\t",album[5]," $",album[6]," Cant:",album[7]," ",album[8])
+        table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]))
+    console = Console()
+    console.print(table)
+ 
     input("Presione ENTER para continuar")
 
 def ListarAlbumesPorGenero():
     con = modelo.Conectar()
     listado = con.ListarPorGenero()
-    print("\n| COD. ÁLBUM   |          NOMBRE              |       INTERPRETE              |   GENERO   |     DISCOGRAFICA   |   PRECIO   |   CANTIDAD   |  FORMATO   |")
+    
+    table = Table(title="Álbumes por Género")
+    columnas = ["GÉNERO", "COD. ÁLBUM", "ÁLBUM", "NOMBRE ARTISTA", "APELLIDO ARTISTA", "DISCOGRÁFICA", "PRECIO", "CANTIDAD", "FORMATO"]
+    for col in columnas:
+        table.add_column(col, style="light_sea_green", justify="center")
+    
     for album in listado:
-        print(' ',album[0],"\t",album[1],"\t\t",album[2]+' '+album[3],"\t\t  ",album[4],"\t",album[5]," $",album[6]," Cant:",album[7]," ",album[8])
+        table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]))
+    console = Console()
+    console.print(table)
+    
     input("Presione ENTER para continuar")
 
 

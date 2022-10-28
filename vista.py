@@ -14,9 +14,9 @@ console = Console(width=100)
 
 def clear():
     try:
-        return os.system('cls')
-    except:
         return os.system('clear')
+    except:
+        return os.system('cls')
 
 def barra_progreso():
     for step in track(range(100), description="[blue]Procesando"):

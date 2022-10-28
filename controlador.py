@@ -2,6 +2,8 @@ import modelo
 # Módulos externos:
 from rich.table import Table
 from rich.console import Console
+from rich import box
+from rich.align import Align
 
 
 def ListarAlbumesPorArtistas():
@@ -32,9 +34,12 @@ def ListarAlbumesPorGenero():
     for album in listado:
         table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]))
     console = Console()
-    console.print(table)
+    console.print(Align.center(table))
     
-    input("Presione ENTER para continuar")
+    tabla_continuar = Table(expand=True, style="cyan", box=box.ASCII2, show_header=False)
+    tabla_continuar.add_row("[i]Presione [bold cyan]ENTER[/][/i] para continuar :smiley:: ")
+    console.print(tabla_continuar)
+    console.input("[bold cyan]>: ")
 
 
 

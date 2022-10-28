@@ -8,7 +8,7 @@ class Conectar():
                 host = 'localhost',
                 port = 3306,
                 user = 'root',
-                password = '',
+                password = '15963200',
                 db = 'disqueria'
 
             )
@@ -234,7 +234,7 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                revisoTemasSQL = "select * from tema where cod_album = %s and vigente = 1"
+                revisoTemasSQL = "select * from album where cod_album = %s and vigente = 1"
                 cursor.execute(revisoTemasSQL,(cod_album,))
                 resultado = cursor.fetchall()
                 if len(resultado) > 0:

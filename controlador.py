@@ -132,7 +132,7 @@ def ModificarAlbum():
     cantidad = int(input("\nIngrese cantidad disponible de este álbum: "))
     caratula = input("\nIngrese la dirección web de la Carátula: ")
 
-    nuevoAlbum = modelo.Album(0,cod_album,nombre,id_interprete,id_genero,cant_temas,id_discografica,id_formato,fec_lanzamiento,precio,cantidad,caratula)
+    nuevoAlbum = modelo.Album(0,cod_album,nombre,id_interprete,id_genero,cant_temas,id_discografica,id_formato,fec_lanzamiento,precio,cantidad,caratula,1)
     con.ModificarAlbum(nuevoAlbum)
     input("Presione ENTER para continuar")
 

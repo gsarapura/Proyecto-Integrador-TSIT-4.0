@@ -6,7 +6,17 @@ from rich.align import Align
 
 console = Console(width=100)
 
-def instanciar_modelo():
+def TablaArtistasVigentes():
+    con = modelo.Conectar()
+    table = Table(title="Estos son los intérpretes vigentes actualmente:")
+    columnas = ["ID", "APELLIDO", "NOMBRE", "NACIONALIDAD", "URL FOTO"]
+    for col in columnas:
+        table.add_column(col, style="cyan", justify="center")
+    
+    for i in con.ListarInterprete():
+        table.add_row(str(i[0]), str(i[2]), str(i[1]), str(i[3]), str(i[4]))
+
+    console.print(Align.center(table))
     return modelo.Conectar()
 
 def ListarAlbumesPorArtistas():
@@ -22,8 +32,6 @@ def ListarAlbumesPorArtistas():
         table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]))
     console = Console()
     console.print(table)
- 
-    input("Presione ENTER para continuar")
 
 def ListarAlbumesPorGenero():
     con = modelo.Conectar() 
@@ -39,105 +47,41 @@ def ListarAlbumesPorGenero():
     console = Console(width=140)
     console.print(Align.center(table))    
 
-def InsertarAlbum():
-    cod_album = int(input("\nIngrese el código del nuevo Álbum: "))
-    nombre = input("Ingrese el nombre del álbum: ")
-
-    # Hay que tener los siguientes datos ya dentro de la base:
+def TablaGenero():
     con = modelo.Conectar()
-
-    print("\nIntérpretes Disponibles:")
-
-    for i in con.ListarInterprete():
-        print(i)
-    print("\n")
-    print("En caso de que el Intérprete no esté en la lista, ingrese 0 para agregarlo.")  
-  
-    id_interprete = int(input("\nIngrese el ID del Intérprete: "))
-    if id_interprete == 0:
-        nombre = input("Ingrese el nombre del Intérprete: ")
-        apellido = input("Ingrese el apellido del Intérprete: ")
-        nacionalidad = input("Ingrese la nacionalidad del Intérprete: ")
-        foto = input("Ingrese la dirección web de la foto del Intérprete: ")
-        nuevoInterprete = modelo.Interprete(0,nombre,apellido,nacionalidad,foto,1)
-        con.InsertarInterprete(nuevoInterprete)
-        id_interprete = con.ObtenerIDGenerado()
-        print("El ID del Intérprete es: ",id_interprete)  
-    print("\nGénero")
-    for g in con.ListarGenero():
-        print(g)
-    id_genero = int(input("\nIngrese el ID del Género: "))
-
-    cant_temas = int(input("\nIngrese la cantidad de temas: ")) # Menos este, por supuesto.
-
-    print("\nDiscográfica")
-    for d in con.ListarDiscografica():
-        print(d)
-    id_discografica = int(input("\nIngrese el ID de la discografica: "))
-
-    print("\nFormato")
-    for f in con.ListarFormato():
-        print(f)
-    id_formato = int(input("\nIngrese el ID del formato: "))
-    # Hasta acá.
-
-    fec_lanzamiento = input("\nIngrese la Fecha de Lanzamiento (aaaa-mm-dd): ")
-    precio = float(input("\nIngrese el precio: "))
-    cantidad = int(input("\nIngrese cantidad disponible de este álbum: "))
-    caratula = input("\nIngrese la dirección web de la Carátula: ")
-
-    nuevoAlbum = modelo.Album(0,cod_album,nombre,id_interprete,id_genero,cant_temas,id_discografica,id_formato,fec_lanzamiento,precio,cantidad,caratula,1)
-    con.InsertarAlbum(nuevoAlbum)
-    input("Presione ENTER para continuar")
-
-def ModificarAlbum():
-    ListarAlbumesPorArtistas()
-    cod_album = int(input("\nIngrese el código del Álbum que quiere modificar: "))
-
-    nombre = input("Ingrese el nuevo nombre del álbum: ")
-
-    # Hay que tener los siguientes datos ya dentro de la base:
-    con = modelo.Conectar()
-
-    print("\nIntérpretes Disponibles:")
-
-    for i in con.ListarInterprete():
-        print(i)
-    id_interprete = int(input("\nIngrese el ID del Intérprete: "))
+    table = Table(title="Géneros:")
+    columnas = ["ID", "NOMBRE"]
+    for col in columnas:
+        table.add_column(col, style="cyan", justify="center")
     
-    print("\nGénero")
-    for g in con.ListarGenero():
-        print(g)
-    id_genero = int(input("\nIngrese el ID del Género: "))
+    for i in con.ListarGenero():
+        table.add_row(str(i[0]), str(i[1]))
 
-    cant_temas = int(input("\nIngrese la cantidad de temas: ")) # Menos este, por supuesto.
+    console.print(Align.center(table))
 
-    print("\nDiscográfica")
-    for d in con.ListarDiscografica():
-        print(d)
-    id_discografica = int(input("\nIngrese el ID de la discografica: "))
-
-    print("\nFormato")
-    for f in con.ListarFormato():
-        print(f)
-    id_formato = int(input("\nIngrese el ID del formato: "))
-    # Hasta acá.
-
-    fec_lanzamiento = input("\nIngrese la Fecha de Lanzamiento (aaaa-mm-dd): ")
-    precio = float(input("\nIngrese el precio: "))
-    cantidad = int(input("\nIngrese cantidad disponible de este álbum: "))
-    caratula = input("\nIngrese la dirección web de la Carátula: ")
-
-    nuevoAlbum = modelo.Album(0,cod_album,nombre,id_interprete,id_genero,cant_temas,id_discografica,id_formato,fec_lanzamiento,precio,cantidad,caratula,1)
-    con.ModificarAlbum(nuevoAlbum)
-    input("Presione ENTER para continuar")
-
-def EliminarAlbum():
-    ListarAlbumesPorArtistas()
-    cod_album = int(input("\nIngrese el código del Álbum que quiere eliminar: "))
+def TablaDiscografica():
     con = modelo.Conectar()
-    con.EliminarAlbum(cod_album)
-    input("Presione ENTER para continuar")
+    table = Table(title="Discográfica:")
+    columnas = ["ID", "NOMBRE"]
+    for col in columnas:
+        table.add_column(col, style="cyan", justify="center")
+    
+    for i in con.ListarDiscografica():
+        table.add_row(str(i[0]), str(i[1]))
+
+    console.print(Align.center(table))
+
+def TablaFormato():
+    con = modelo.Conectar()
+    table = Table(title="Formato:")
+    columnas = ["ID", "TIPO"]
+    for col in columnas:
+        table.add_column(col, style="cyan", justify="center")
+    
+    for i in con.ListarFormato():
+        table.add_row(str(i[0]), str(i[1]))
+
+    console.print(Align.center(table))
 
 def InsertarInterprete():
     datos = ["el [cyan bold]nombre[/]", "el [cyan bold]apellido[/]", "la [cyan bold]nacionalidad[/]", "la [cyan bold]foto[/]"] 
@@ -149,9 +93,118 @@ def InsertarInterprete():
     
     nuevoInterprete = modelo.Interprete(0, inputs[0], inputs[1], inputs[2], inputs[3], 1)#El 1 es para darlo de alta en vigente. Si el vigente es 0 (false) no se mostrará.
     con = modelo.Conectar()
-    con.InsertarInterprete(nuevoInterprete)
+    con.InsertarInterprete(nuevoInterprete)  
+
+def InsertarAlbum():
+    console.rule("", style="bold orange_red1")
+    cod_album = int(console.input("[i]Ingrese el [cyan bold]código[/] del nuevo álbum[/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+    nombre = console.input("[i]Ingrese el [cyan bold]nombre[/] del álbum[/i][bold cyan]: ")
+    console.rule("", style="bold orange_red1")
+
+    # Hay que tener los siguientes datos ya dentro de la base:
+    con = modelo.Conectar()
+
+    TablaArtistasVigentes()
+
+    console.rule("", style="bold orange_red1")
+    console.print("[i]En caso de que el Intérprete [bold red1]no[/] esté en la lista, [bold cyan]ingrese 0[/] para agregarlo.[/i]")  
+    id_interprete = int(console.input("[i]Ingrese el [bold cyan]ID[/] del intérprete[/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+
+    if id_interprete == 0:
+        InsertarInterprete()
+        id_interprete = con.ObtenerIDGenerado()
+        print("El ID del Intérprete es: ",id_interprete)  
+
+    TablaGenero()
+    console.rule("", style="bold orange_red1")
+    id_genero = int(console.input("[i]Ingrese el [bold cyan]ID[/] del Género[/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+    cant_temas = int(console.input("[i]Ingrese la [bold cyan]cantidad[/] de temas[/i][bold cyan]: ")) # Menos este, por supuesto.
+    console.rule("", style="bold orange_red1")
+
+    TablaDiscografica()
+    console.rule("", style="bold orange_red1")
+    id_discografica = int(console.input("[i]Ingrese el [bold cyan]ID[/] de la discografica[/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+
+    TablaFormato()
+    console.rule("", style="bold orange_red1")
+    id_formato = int(console.input("[i]Ingrese el [bold cyan]ID[/] del formato[/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+    # Hasta acá.
+    fec_lanzamiento = console.input("[i]Ingrese la [bold cyan]fecha de lanzamiento[/] (aaaa-mm-dd)[bold cyan]: ")
+    console.rule("", style="bold orange_red1")
+    precio = float(console.input("[i]Ingrese el [bold cyan]precio[/][/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+    cantidad = int(console.input("[i]Ingrese [bold cyan]cantidad disponible[/] de este álbum[/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+    caratula = console.input("[i]Ingrese la [bold cyan]dirección web[/] de la Carátula[/i][bold cyan]: ")
+    console.rule("", style="bold orange_red1")
+
+    nuevoAlbum = modelo.Album(0,cod_album,nombre,id_interprete,id_genero,cant_temas,id_discografica,id_formato,fec_lanzamiento,precio,cantidad,caratula,1)
+    con.InsertarAlbum(nuevoAlbum)
+
+def ModificarAlbum():
+    ListarAlbumesPorArtistas()
+
+    console.rule("", style="bold orange_red1")
+    cod_album = int(console.input("[i]Ingrese el código del [bold cyan]Álbum[/] que quiere modificar[/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+    nombre = console.input("[i]Ingrese el [bold cyan]nuevo nombre[/] del álbum[/i][bold cyan]: ")
+    console.rule("", style="bold orange_red1")
+
+    # Hay que tener los siguientes datos ya dentro de la base:
+    con = modelo.Conectar()
+
+    TablaArtistasVigentes()
+    console.rule("", style="bold orange_red1")
+    id_interprete = int(console.input("[i]Ingrese el [bold cyan]ID[/] del intérprete[/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+
+    TablaGenero()
+    console.rule("", style="bold orange_red1")
+    id_genero = int(console.input("[i]Ingrese el [bold cyan]ID[/] del Género[/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+    cant_temas = int(console.input("[i]Ingrese la [bold cyan]cantidad[/] de temas[/i][bold cyan]: ")) # Menos este, por supuesto.
+    console.rule("", style="bold orange_red1")
+
+    #cant_temas = int(input("\nIngrese la cantidad de temas: ")) # Menos este, por supuesto.
+    TablaDiscografica()
+    console.rule("", style="bold orange_red1")
+    id_discografica = int(console.input("[i]Ingrese el [bold cyan]ID[/] de la discografica[/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+
+    TablaFormato()
+    console.rule("", style="bold orange_red1")
+    id_formato = int(console.input("[i]Ingrese el [bold cyan]ID[/] del formato[/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+    # Hasta acá.
+    fec_lanzamiento = console.input("[i]Ingrese la [bold cyan]fecha de lanzamiento[/] (aaaa-mm-dd)[bold cyan]: ")
+    console.rule("", style="bold orange_red1")
+    precio = float(console.input("[i]Ingrese el [bold cyan]precio[/][/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+    cantidad = int(console.input("[i]Ingrese [bold cyan]cantidad disponible[/] de este álbum[/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+    caratula = console.input("[i]Ingrese la [bold cyan]dirección web[/] de la Carátula[/i][bold cyan]: ")
+    console.rule("", style="bold orange_red1")
+
+    nuevoAlbum = modelo.Album(0,cod_album,nombre,id_interprete,id_genero,cant_temas,id_discografica,id_formato,fec_lanzamiento,precio,cantidad,caratula,1)
+    con.ModificarAlbum(nuevoAlbum)
+
+def EliminarAlbum():
+    ListarAlbumesPorArtistas()
+    
+    console.rule("", style="bold orange_red1")
+    cod_album = int(console.input("[i]Ingrese el [bold cyan]código del Álbum[/] que quiere eliminar[/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
+
+    con = modelo.Conectar()
+    con.EliminarAlbum(cod_album)
 
 def ModificarInterprete():
+    TablaArtistasVigentes()
     datos = ["el [cyan bold]ID[/]", "el [cyan bold]nuevo nombre[/]", "el [cyan bold]nuevo apellido[/]", "la [cyan bold]nueva nacionalidad[/]", "la [cyan bold]nueva dirección web[/] de la foto"]
     inputs = []
     for i in datos:
@@ -167,6 +220,7 @@ def ModificarInterprete():
     con.ModificarInterprete(nuevoInterprete)
 
 def EliminarInterprete():
+    TablaArtistasVigentes()
     console.rule("", style="bold orange_red1")
     id_interprete = int(console.input("[i]Ingrese el [bold cyan]ID[/] del intérprete que quiere eliminar[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")

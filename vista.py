@@ -30,19 +30,6 @@ def enter_continuar():
     console.print(tabla_continuar)
     console.input("[bold cyan]>: ")
 
-def tabla_artistas_vigentes():
-    #con = modelo.Conectar()
-    con = controlador.instanciar_modelo()
-    table = Table(title="Estos son los Intérpretes vigentes actualmente:")
-    columnas = ["ID", "APELLIDO", "NOMBRE", "NACIONALIDAD", "URL FOTO"]
-    for col in columnas:
-        table.add_column(col, style="cyan", justify="center")
-    
-    for i in con.ListarInterprete():
-        table.add_row(str(i[0]), str(i[2]), str(i[1]), str(i[3]), str(i[4]))
-
-    console.print(Align.center(table))
-
 def ABMInterprete():
     # Bandera:
     incorrecto_abm = 0
@@ -93,17 +80,14 @@ def ABMInterprete():
 
         if opcion == 1:
             barra_progreso()
-            tabla_artistas_vigentes()
             controlador.InsertarInterprete()
             enter_continuar()
         elif opcion == 2:
             barra_progreso()
-            tabla_artistas_vigentes()
             controlador.EliminarInterprete()
             enter_continuar()
         elif opcion == 3:
             barra_progreso()
-            tabla_artistas_vigentes()
             controlador.ModificarInterprete()
             enter_continuar()
         elif opcion == 4:
@@ -164,11 +148,15 @@ def ABMAlbum():
         if opcion == 1:
             barra_progreso()
             controlador.InsertarAlbum()
+            enter_continuar()
         elif opcion == 2:
             barra_progreso()
             controlador.EliminarAlbum()
+            enter_continuar()
         elif opcion == 3:
+            barra_progreso()
             controlador.ModificarAlbum()
+            enter_continuar()
         elif opcion == 4:
             print("")
             break
@@ -231,6 +219,7 @@ while True:
     elif opcion == 2:
         barra_progreso()
         controlador.ListarAlbumesPorArtistas()
+        enter_continuar()
     elif opcion == 3:
         barra_progreso()
         controlador.ListarAlbumesPorGenero()

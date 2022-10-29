@@ -204,7 +204,7 @@ class Conectar():
 
                 self.conexion.commit()
                 self.conexion.close()
-                print("Álbum insertado correctamente")
+                self.console.print("[i]Álbum insertado [bold green3]correctamente[/][/i] :smiley:",justify="center")
 
             except mysql.connector.Error as descripcionError:
                 print("Error al Guardar!",descripcionError)
@@ -245,17 +245,19 @@ class Conectar():
                 cursor.execute(revisoTemasSQL,(cod_album,))
                 resultado = cursor.fetchall()
                 if len(resultado) > 0:
-                    print("No se puede eliminar el album porque hay temas asociados a ese id: ")
+                    self.console.print("[i][bold red1]No[/] se puede eliminar el album porque hay temas asociados a ese id[/i][bold red1]: ")
                     for i in resultado:
                         print(i)
-                    option = input("¿Desea dar de baja los temas asociados a ese album? Si/No: ")
+
+                    self.console.rule("", style="bold orange_red1")
+                    option = self.console.input("[i]¿Desea [bold cyan]dar de baja[/] los temas asociados a ese album? [bold cyan]Si[/]/[bold red1]No[/][/i][bold cyan]: ")
                     option = option.lower()
                     if option == "si":
                         sentenciaSQL = "update tema set vigente = 0 where cod_album = %s"
                         cursor.execute(sentenciaSQL,(cod_album,))
                         self.conexion.commit()
                         self.conexion.close()
-                        print("Temas eliminados correctamente")
+                        self.console.print("[i]Temas eliminados [bold green3]correctamente[/][/i] :smiley:",justify="center")
                         return
                     else:
                         self.conexion.commit()
@@ -271,10 +273,10 @@ class Conectar():
 
                     self.conexion.commit()
                     self.conexion.close()
-                    print("Álbum eliminado correctamente")
+                    self.console.print("[i]Álbum eliminado [bold green3]correctamente[/][/i] :smiley:",justify="center")
 
             except mysql.connector.Error as descripcionError:
-                print("¡Error al Eliminar!",descripcionError)
+                self.console.print("[i]¡[bold red1]Error[/] al eliminar![/i]", descripcionError)
     
     def ListarTema(self):
         

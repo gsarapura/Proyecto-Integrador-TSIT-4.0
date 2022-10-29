@@ -1,6 +1,9 @@
 import mysql.connector
 
+from rich.console import Console
+
 class Conectar():
+    console = Console(width=100)
 
     def __init__(self) -> None:
         try:
@@ -83,7 +86,8 @@ class Conectar():
                     cursor.execute(sentenciaSQL,data)
                     self.conexion.commit()
                     self.conexion.close()
-                    print("Intérprete insertado correctamente")
+                    # Rich
+                    self.console.print("[i]Intérprete insertado [bold green3]correctamente[/][/i] :smiley:",justify="center")
                 else:
                     print("El intérprete ya existe")
                     option = input("¿Desea darlo de alta nuevamente? (Si/No): ")
@@ -100,7 +104,7 @@ class Conectar():
                         self.conexion.commit()
                         self.conexion.close()
             except mysql.connector.Error as descripcionError:
-                print("Error al Guardar!",descripcionError)
+                self.console.print("[i]¡[bold red1]Error[/] al Guardar![/i]", descripcionError)
 
     def ModificarInterprete(self,interprete):
         if self.conexion.is_connected():
@@ -114,10 +118,11 @@ class Conectar():
 
                 self.conexion.commit()
                 self.conexion.close()
-                print("Intérprete modificado correctamente")
+                
+                self.console.print("[i]Intérprete modificado [bold green3]correctamente[/][/i] :smiley:",justify="center")
 
             except mysql.connector.Error as descripcionError:
-                print("Error al Guardar!",descripcionError)
+                self.console.print("[i]¡[bold red1]Error[/] al modificar![/i]", descripcionError)
 
     def EliminarInterprete(self,id_interprete):
         if self.conexion.is_connected():
@@ -153,10 +158,12 @@ class Conectar():
 
                     self.conexion.commit()
                     self.conexion.close()
-                    print("Intérprete eliminado correctamente")
+                   
+                    self.console.print("[i]Intérprete eliminado [bold green3]correctamente[/][/i] :smiley:",justify="center")
 
             except mysql.connector.Error as descripcionError:
                 print("Error al Eliminar!",descripcionError)
+                self.console.print("[i]¡[bold red1]Error[/] al eliminar![/i]", descripcionError)
 
     def InsertarGenero(self,nombre):
         if self.conexion.is_connected():

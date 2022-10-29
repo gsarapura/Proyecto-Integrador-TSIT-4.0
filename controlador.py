@@ -5,7 +5,10 @@ from rich.console import Console
 from rich.align import Align
 
 console = Console(width=100)
-    
+
+def instanciar_modelo():
+    return modelo.Conectar()
+
 def ListarAlbumesPorArtistas():
     con = modelo.Conectar()
     listado = con.ListarAlbumes()
@@ -165,7 +168,7 @@ def ModificarInterprete():
 
 def EliminarInterprete():
     console.rule("", style="bold orange_red1")
-    id_interprete = int(console.input("[i]Ingrese el [bold cyan]ID [/] del intérprete[/i][bold cyan]: "))
+    id_interprete = int(console.input("[i]Ingrese el [bold cyan]ID[/] del intérprete que quiere eliminar[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")
     
     con = modelo.Conectar()

@@ -1,5 +1,5 @@
 import controlador
-import modelo
+# import modelo
 ## Módulos externos
 import os
 from rich.console  import Console
@@ -31,7 +31,8 @@ def enter_continuar():
     console.input("[bold cyan]>: ")
 
 def tabla_artistas_vigentes():
-    con = modelo.Conectar()
+    #con = modelo.Conectar()
+    con = controlador.instanciar_modelo()
     table = Table(title="Estos son los Intérpretes vigentes actualmente:")
     columnas = ["ID", "APELLIDO", "NOMBRE", "NACIONALIDAD", "URL FOTO"]
     for col in columnas:

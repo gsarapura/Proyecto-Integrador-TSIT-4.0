@@ -58,15 +58,8 @@ def InsertarAlbum():
     print("En caso de que el Intérprete no esté en la lista, ingrese 0 para agregarlo.")  
   
     id_interprete = int(input("\nIngrese el ID del Intérprete: "))
-    if id_interprete == 0:
-        nombre = input("Ingrese el nombre del Intérprete: ")
-        apellido = input("Ingrese el apellido del Intérprete: ")
-        nacionalidad = input("Ingrese la nacionalidad del Intérprete: ")
-        foto = input("Ingrese la dirección web de la foto del Intérprete: ")
-        nuevoInterprete = modelo.Interprete(0,nombre,apellido,nacionalidad,foto,1)
-        con.InsertarInterprete(nuevoInterprete)
-        id_interprete = con.ObtenerIDGenerado()
-        print("El ID del Intérprete es: ",id_interprete)  
+    id_interprete = InsertarInterprete() if id_interprete == 0 else id_interprete # Hago una Operación Ternaria para que el ListarGenero() sí se ejecute.
+
     print("\nGénero")
     for g in con.ListarGenero():
         print(g)
@@ -92,6 +85,9 @@ def InsertarAlbum():
 
     nuevoAlbum = modelo.Album(0,cod_album,nombre,id_interprete,id_genero,cant_temas,id_discografica,id_formato,fec_lanzamiento,precio,cantidad,caratula,1)
     con.InsertarAlbum(nuevoAlbum)
+    listadoA = con.ListarAlbumes()
+    for album in listadoA:
+        print(album)
     input("Presione ENTER para continuar")
 
 def ModificarAlbum():
@@ -134,6 +130,9 @@ def ModificarAlbum():
 
     nuevoAlbum = modelo.Album(0,cod_album,nombre,id_interprete,id_genero,cant_temas,id_discografica,id_formato,fec_lanzamiento,precio,cantidad,caratula,1)
     con.ModificarAlbum(nuevoAlbum)
+    listadoA = con.ListarAlbumes()
+    for album in listadoA:
+        print(album)
     input("Presione ENTER para continuar")
 
 def EliminarAlbum():
@@ -141,6 +140,9 @@ def EliminarAlbum():
     cod_album = int(input("\nIngrese el código del Álbum que quiere eliminar: "))
     con = modelo.Conectar()
     con.EliminarAlbum(cod_album)
+    listadoA = con.ListarAlbumes()
+    for album in listadoA:
+        print(album)
     input("Presione ENTER para continuar")
 
 

@@ -12,16 +12,16 @@ from time import sleep
 
 console = Console(width=100)
 
-def clear():
-    try:
-        return os.system('cls')
-    except:
-        return os.system('clear')
+# def clear():
+#     try:
+#         return os.system('cls')
+#     except:
+#         return os.system('clear')
 
 def barra_progreso():
     for step in track(range(100), description="[blue]Procesando"):
             sleep(0.01)
-    clear()
+    # clear()
 
 def ABMInterprete():
     # Bandera:
@@ -29,7 +29,7 @@ def ABMInterprete():
     valuerror_abm = 0
     
     while True:
-        clear()
+        # clear()
 
         console.rule("", style="bold gold3")
         console.print("DISQUERÍA FORMOSA MUSICAL", justify="center", style="bold white on deep_sky_blue4")
@@ -93,7 +93,7 @@ def ABMAlbum():
     valuerror_abm = 0
     
     while True:
-        clear()
+        # clear()
 
         console.rule("", style="bold gold3")
         console.print("DISQUERÍA FORMOSA MUSICAL", justify="center", style="bold white on deep_sky_blue4")
@@ -155,7 +155,7 @@ valuerror = 0
 incorrecto = 0
 
 while True:
-    clear()
+    # clear()
 
     console.rule("", style="bold gold3")
     console.print("DISQUERÍA FORMOSA MUSICAL", justify="center", style="bold white on deep_sky_blue4")

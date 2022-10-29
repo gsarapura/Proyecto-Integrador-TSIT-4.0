@@ -23,7 +23,7 @@ class Conectar():
                 cursor.execute(sentenciaSQL)
                 resultado = cursor.fetchall()
                 self.conexion.close()
-                return resultado
+                return resultado[0][0]
             except mysql.connector.Error as descripcionError:
                 print("Error al obtener el ID generado!",descripcionError)
 
@@ -81,9 +81,10 @@ class Conectar():
                     sentenciaSQL = "INSERT into interprete values(null,%s,%s,%s,%s,1)"
                     data = (interprete.getNombre(),interprete.getApellido(),interprete.getNacionalidad(),interprete.getFoto())
                     cursor.execute(sentenciaSQL,data)
-                    self.conexion.commit()
-                    self.conexion.close()
+                    id = self.ObtenerIDGenerado()
                     print("Intérprete insertado correctamente")
+                    # self.conexion.commit() # no hace falta porque ya se cierra al obtener el id generado
+                    # self.conexion.close()
                 else:
                     print("El intérprete ya existe")
                     option = input("¿Desea darlo de alta nuevamente? (Si/No): ")
@@ -99,6 +100,7 @@ class Conectar():
                         print("Intérprete no dado de alta nuevamente")
                         self.conexion.commit()
                         self.conexion.close()
+                return id
             except mysql.connector.Error as descripcionError:
                 print("Error al Guardar!",descripcionError)
 
@@ -289,7 +291,8 @@ class Conectar():
                 sentenciaSQL = "SELECT * from genero where vigente = 1" # el 1 espara que no me tragia los que estan eliminados
                 cursor.execute(sentenciaSQL)
                 resultados = cursor.fetchall()
-                #self.conexion.close()
+                self.conexion.commit()
+                self.conexion.close()
                 return resultados
             except mysql.connector.Error as descripcionError:
                 print("¡Error al Buscar!",descripcionError)

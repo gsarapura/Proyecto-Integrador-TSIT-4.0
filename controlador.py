@@ -3,6 +3,7 @@ import modelo
 from rich.table import Table
 from rich.console import Console
 from rich.align import Align
+from rich import box
 
 console = Console(width=100)
     
@@ -20,7 +21,7 @@ def ListarAlbumesPorArtistas():
     console = Console()
     console.print(table)
  
-    input("Presione ENTER para continuar")
+
 
 def ListarAlbumesPorGenero():
     con = modelo.Conectar() 
@@ -170,3 +171,39 @@ def EliminarInterprete():
     
     con = modelo.Conectar()
     con.EliminarInterprete(id_interprete)
+
+
+def ListarBusquedaNombreAlbum():
+    con = modelo.Conectar()
+    tabla_busqueda = Table(expand=True, style="cyan", box=box.ASCII2, show_header=False)
+    tabla_busqueda.add_row("[i]Ingrese el [bold cyan]nombre del álbum[/][/i] que desea buscar: ")
+    console = Console()
+    console.print(tabla_busqueda)
+    nombre = console.input("[bold cyan]>: ")
+    con = modelo.Conectar()
+    print=" "
+    print=" "
+    print=" "
+    print=" "
+
+    table = Table(title="Albumes coincidentes: ")
+    coincidencias = con.ListarBusquedaNombreAlbum(nombre)
+    table.add_column("COD. ÁLBUM", style="cyan")
+    table.add_column("NOMBRE", style="cyan")
+    table.add_column("INTÉRPRETE", style="cyan")
+    table.add_column("GÉNERO", style="cyan")
+    table.add_column("DISCOGRÁFICA", style="cyan")
+    table.add_column("PRECIO", style="cyan")
+    table.add_column("CANTIDAD", style="cyan")
+    table.add_column("FORMATO", style="cyan")
+    table.add_column("FECHA", style="cyan")
+
+    if len(coincidencias) == 0:
+        print("No se encontraron coincidencias.")
+        return
+    for album in coincidencias:
+        table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(
+            album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]))
+    
+    console.print(table)
+    return

@@ -30,6 +30,7 @@ def enter_continuar():
     console.print(tabla_continuar)
     console.input("[bold cyan]>: ")
 
+
 def tabla_artistas_vigentes():
     con = modelo.Conectar()
     table = Table(title="Estos son los Intérpretes vigentes actualmente:")
@@ -230,12 +231,15 @@ while True:
     elif opcion == 2:
         barra_progreso()
         controlador.ListarAlbumesPorArtistas()
+        enter_continuar()
     elif opcion == 3:
         barra_progreso()
         controlador.ListarAlbumesPorGenero()
         enter_continuar()
     elif opcion == 4:
-        None
+        barra_progreso()
+        controlador.ListarBusquedaNombreAlbum()
+        enter_continuar()
     elif opcion == 5:
         ABMInterprete()
     elif opcion == 6:

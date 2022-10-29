@@ -1,19 +1,11 @@
 import modelo
-import vista
 # Módulos Rich:
 from rich.table import Table
 from rich.console import Console
-from rich import box
 from rich.align import Align
 
 console = Console(width=100)
     
-def enter_continuar():
-    tabla_continuar = Table(expand=True, style="cyan", box=box.ASCII2, show_header=False)
-    tabla_continuar.add_row("[i]Presione [bold cyan]ENTER[/][/i] para continuar: ")
-    console.print(tabla_continuar)
-    console.input("[bold cyan]>: ")
-
 def ListarAlbumesPorArtistas():
     con = modelo.Conectar()
     listado = con.ListarAlbumes()
@@ -42,9 +34,7 @@ def ListarAlbumesPorGenero():
     for album in listado:
         table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]))
     console = Console(width=140)
-    console.print(Align.center(table))
-    
-    enter_continuar()
+    console.print(Align.center(table))    
 
 def InsertarAlbum():
     cod_album = int(input("\nIngrese el código del nuevo Álbum: "))
@@ -157,7 +147,6 @@ def InsertarInterprete():
     nuevoInterprete = modelo.Interprete(0, inputs[0], inputs[1], inputs[2], inputs[3], 1)#El 1 es para darlo de alta en vigente. Si el vigente es 0 (false) no se mostrará.
     con = modelo.Conectar()
     con.InsertarInterprete(nuevoInterprete)
-    enter_continuar()
 
 def ModificarInterprete():
     datos = ["el [cyan bold]ID[/]", "el [cyan bold]nuevo nombre[/]", "el [cyan bold]nuevo apellido[/]", "la [cyan bold]nueva nacionalidad[/]", "la [cyan bold]nueva dirección web[/] de la foto"]
@@ -173,7 +162,6 @@ def ModificarInterprete():
     nuevoInterprete = modelo.Interprete(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], 1)#el 1 es para que no se elimine... mantenerlo vigente
     con = modelo.Conectar()
     con.ModificarInterprete(nuevoInterprete)
-    enter_continuar()
 
 def EliminarInterprete():
     console.rule("", style="bold orange_red1")
@@ -182,4 +170,3 @@ def EliminarInterprete():
     
     con = modelo.Conectar()
     con.EliminarInterprete(id_interprete)
-    enter_continuar()

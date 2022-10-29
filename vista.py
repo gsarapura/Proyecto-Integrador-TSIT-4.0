@@ -24,9 +24,14 @@ def barra_progreso():
             sleep(0.01)
     clear()
 
+def enter_continuar():
+    tabla_continuar = Table(expand=True, style="cyan", box=box.ASCII2, show_header=False)
+    tabla_continuar.add_row("[i]Presione [bold cyan]ENTER[/][/i] para continuar: ")
+    console.print(tabla_continuar)
+    console.input("[bold cyan]>: ")
+
 def tabla_artistas_vigentes():
     con = modelo.Conectar()
-    # Rich
     table = Table(title="Estos son los Intérpretes vigentes actualmente:")
     columnas = ["ID", "APELLIDO", "NOMBRE", "NACIONALIDAD", "URL FOTO"]
     for col in columnas:
@@ -89,14 +94,17 @@ def ABMInterprete():
             barra_progreso()
             tabla_artistas_vigentes()
             controlador.InsertarInterprete()
+            enter_continuar()
         elif opcion == 2:
             barra_progreso()
             tabla_artistas_vigentes()
             controlador.EliminarInterprete()
+            enter_continuar()
         elif opcion == 3:
             barra_progreso()
             tabla_artistas_vigentes()
             controlador.ModificarInterprete()
+            enter_continuar()
         elif opcion == 4:
             print("")
             break
@@ -225,6 +233,7 @@ while True:
     elif opcion == 3:
         barra_progreso()
         controlador.ListarAlbumesPorGenero()
+        enter_continuar()
     elif opcion == 4:
         None
     elif opcion == 5:

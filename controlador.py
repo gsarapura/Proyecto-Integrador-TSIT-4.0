@@ -1,4 +1,5 @@
 import modelo
+import vista
 # Módulos Rich:
 from rich.table import Table
 from rich.console import Console
@@ -8,7 +9,6 @@ from rich.align import Align
 console = Console(width=100)
     
 def enter_continuar():
-    console = Console(width=100)
     tabla_continuar = Table(expand=True, style="cyan", box=box.ASCII2, show_header=False)
     tabla_continuar.add_row("[i]Presione [bold cyan]ENTER[/][/i] para continuar: ")
     console.print(tabla_continuar)
@@ -146,23 +146,7 @@ def EliminarAlbum():
     con.EliminarAlbum(cod_album)
     input("Presione ENTER para continuar")
 
-def tabla_artistas_vigentes():
-    con = modelo.Conectar()
-    # Rich
-    table = Table(title="Estos son los Intérpretes vigentes actualmente:")
-    columnas = ["ID", "APELLIDO", "NOMBRE", "NACIONALIDAD"]
-    for col in columnas:
-        table.add_column(col, style="cyan", justify="center")
-    
-    for i in con.ListarInterprete():
-        table.add_row(str(i[0]), str(i[2]), str(i[1]), str(i[3]))
-
-    console.print(Align.center(table))
-
 def InsertarInterprete():
-    # Rich
-    tabla_artistas_vigentes()
-    
     datos = ["el [cyan bold]nombre[/]", "el [cyan bold]apellido[/]", "la [cyan bold]nacionalidad[/]", "la [cyan bold]foto[/]"] 
     inputs = []
     for i in datos:
@@ -176,8 +160,6 @@ def InsertarInterprete():
     enter_continuar()
 
 def ModificarInterprete():
-    tabla_artistas_vigentes()
-
     datos = ["el [cyan bold]ID[/]", "el [cyan bold]nuevo nombre[/]", "el [cyan bold]nuevo apellido[/]", "la [cyan bold]nueva nacionalidad[/]", "la [cyan bold]nueva dirección web[/] de la foto"]
     inputs = []
     for i in datos:
@@ -194,8 +176,6 @@ def ModificarInterprete():
     enter_continuar()
 
 def EliminarInterprete():
-    tabla_artistas_vigentes()
-    
     console.rule("", style="bold orange_red1")
     id_interprete = int(console.input("[i]Ingrese el [bold cyan]ID [/] del intérprete[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")

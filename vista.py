@@ -1,4 +1,5 @@
 import controlador
+import modelo
 ## Módulos externos
 import os
 from rich.console  import Console
@@ -22,6 +23,19 @@ def barra_progreso():
     for step in track(range(100), description="[blue]Procesando"):
             sleep(0.01)
     clear()
+
+def tabla_artistas_vigentes():
+    con = modelo.Conectar()
+    # Rich
+    table = Table(title="Estos son los Intérpretes vigentes actualmente:")
+    columnas = ["ID", "APELLIDO", "NOMBRE", "NACIONALIDAD", "URL FOTO"]
+    for col in columnas:
+        table.add_column(col, style="cyan", justify="center")
+    
+    for i in con.ListarInterprete():
+        table.add_row(str(i[0]), str(i[2]), str(i[1]), str(i[3]), str(i[4]))
+
+    console.print(Align.center(table))
 
 def ABMInterprete():
     # Bandera:
@@ -73,12 +87,15 @@ def ABMInterprete():
 
         if opcion == 1:
             barra_progreso()
+            tabla_artistas_vigentes()
             controlador.InsertarInterprete()
         elif opcion == 2:
             barra_progreso()
+            tabla_artistas_vigentes()
             controlador.EliminarInterprete()
         elif opcion == 3:
             barra_progreso()
+            tabla_artistas_vigentes()
             controlador.ModificarInterprete()
         elif opcion == 4:
             print("")

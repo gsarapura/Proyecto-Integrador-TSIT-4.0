@@ -1,6 +1,7 @@
 import controlador
+# import modelo
 ## Módulos externos
-import os
+from os import system, name as osname
 from rich.console  import Console
 # Crear tablas:
 from rich import box
@@ -13,15 +14,21 @@ from time import sleep
 console = Console(width=100)
 
 def clear():
-    try:
-        return os.system('cls')
-    except:
-        return os.system('clear')
+    if osname == "nt":
+        return system('cls')
+    else:
+        return system('clear')
 
 def barra_progreso():
     for step in track(range(100), description="[blue]Procesando"):
             sleep(0.01)
     clear()
+
+def enter_continuar():
+    tabla_continuar = Table(expand=True, style="cyan", box=box.ASCII2, show_header=False)
+    tabla_continuar.add_row("[i]Presione [bold cyan]ENTER[/][/i] para continuar: ")
+    console.print(tabla_continuar)
+    console.input("[bold cyan]>: ")
 
 def ABMInterprete():
     # Bandera:
@@ -74,12 +81,15 @@ def ABMInterprete():
         if opcion == 1:
             barra_progreso()
             controlador.InsertarInterprete()
+            enter_continuar()
         elif opcion == 2:
             barra_progreso()
             controlador.EliminarInterprete()
+            enter_continuar()
         elif opcion == 3:
             barra_progreso()
             controlador.ModificarInterprete()
+            enter_continuar()
         elif opcion == 4:
             print("")
             break
@@ -138,11 +148,15 @@ def ABMAlbum():
         if opcion == 1:
             barra_progreso()
             controlador.InsertarAlbum()
+            enter_continuar()
         elif opcion == 2:
             barra_progreso()
             controlador.EliminarAlbum()
+            enter_continuar()
         elif opcion == 3:
+            barra_progreso()
             controlador.ModificarAlbum()
+            enter_continuar()
         elif opcion == 4:
             print("")
             break
@@ -205,11 +219,15 @@ while True:
     elif opcion == 2:
         barra_progreso()
         controlador.ListarAlbumesPorArtistas()
+        enter_continuar()
     elif opcion == 3:
         barra_progreso()
         controlador.ListarAlbumesPorGenero()
+        enter_continuar()
     elif opcion == 4:
-        None
+        barra_progreso()
+        controlador.ListarBusquedaNombreAlbum()
+        enter_continuar()
     elif opcion == 5:
         ABMInterprete()
     elif opcion == 6:

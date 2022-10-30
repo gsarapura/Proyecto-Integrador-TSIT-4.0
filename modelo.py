@@ -1,3 +1,4 @@
+from ast import Break
 import mysql.connector
 
 from rich.console import Console
@@ -12,7 +13,7 @@ class Conectar():
                 host = 'localhost',
                 port = 3306,
                 user = 'root',
-                password = '',
+                password = '15963200',
                 db = 'disqueria'
             )
         except mysql.connector.Error as descripcionError:
@@ -50,7 +51,7 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                senteciaSQL = "SELECT genero.nombre,cod_album, album.nombre, interprete.apellido, interprete.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album INNER JOIN interprete ON album.id_interprete = interprete.id_interprete INNER JOIN discografica ON album.id_discografica = discografica.id_discografica INNER JOIN formato ON album.id_formato = formato.id_formato INNER JOIN genero ON album.id_genero = genero.id_genero WHERE genero.vigente = 1  ORDER By genero.nombre asc, interprete.apellido, interprete.nombre"
+                senteciaSQL = "SELECT genero.nombre,cod_album, album.nombre, interprete.apellido, interprete.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album INNER JOIN interprete ON album.id_interprete = interprete.id_interprete INNER JOIN discografica ON album.id_discografica = discografica.id_discografica INNER JOIN formato ON album.id_formato = formato.id_formato INNER JOIN genero ON album.id_genero = genero.id_genero WHERE album.vigente = 1  ORDER By genero.nombre asc, interprete.apellido, interprete.nombre"
                 # Código Hernán:
                 # senteciaSQL = "SELECT cod_album, album.nombre, interprete.nombre, interprete.apellido, genero.nombre, discografica.nombre, precio, cantidad, formato.tipo FROM album, interprete, discografica,formato,genero WHERE album.id_interprete = interprete.id_interprete AND album.id_discografica = discografica.id_discografica AND album.id_formato = formato.id_formato AND album.id_genero = genero.id_genero and album.vigente = 1 ORDER By genero.nombre asc"
                 # el vigente = 1 es para que no me traiga los que estan eliminados
@@ -81,6 +82,7 @@ class Conectar():
                 data = (interprete.getNombre(),interprete.getApellido())
                 cursor.execute(revisoExistenciaSQL,data)
                 resultado = cursor.fetchall()
+                id = 0
                 if len(resultado) == 0:
                     sentenciaSQL = "INSERT into interprete values(null,%s,%s,%s,%s,1)"
                     data = (interprete.getNombre(),interprete.getApellido(),interprete.getNacionalidad(),interprete.getFoto())
@@ -97,6 +99,10 @@ class Conectar():
                         sentenciaSQL = "update interprete set vigente = 1 where nombre = %s and apellido = %s"
                         data = (interprete.getNombre(),interprete.getApellido())
                         cursor.execute(sentenciaSQL,data)
+                        traerId = "Select id_interprete from interprete where nombre = %s and apellido = %s limit 1"
+                        cursor.execute(traerId,data)
+                        id = cursor.fetchall()
+                        id = id[0][0]
                         self.conexion.commit()
                         self.conexion.close()
                         print("Intérprete dado de alta nuevamente")
@@ -104,7 +110,7 @@ class Conectar():
                         print("Intérprete no dado de alta nuevamente")
                         self.conexion.commit()
                         self.conexion.close()
-                return id
+                return id if id != 0 else 0
             except mysql.connector.Error as descripcionError:
                 self.console.print("[i]¡[bold red1]Error[/] al Guardar![/i]", descripcionError)
 
@@ -135,7 +141,7 @@ class Conectar():
                 cursor.execute(revisoAlbumsSQL,(id_interprete,))
                 resultados = cursor.fetchall()
                 if len(resultados) > 0:
-                    print("No se puede eliminar el interprete porque hay albunes y temas asociados a ese id: ")
+                    self.console.print("[i][bold red1]No[/] se puede eliminar el interprete porque hay álbumes y temas asociados a ese Id[/i][bold red1]: ")
                     #Table
                     table = Table(title="Interprete")
                     table.add_column("ID", style="cyan",justify="center")
@@ -150,9 +156,10 @@ class Conectar():
                     table.add_column("PRECIO", style="cyan", justify="center")
                     table.add_column("CANTIDAD", style="cyan", justify="center")
                     for i in resultados:
-                        table.add_row(str(i[0]), str(i[1]), str(i[2]), str(i[3]), str(i[4]), str(i[5]), str(i[6]), str(i[7]), str(i[8]), str[9], str[10])
-                    #
-                    option = input("¿Desea dar de baja los albumes y temas asociados a ese intérprete? Si/No: ")
+                        table.add_row(str(i[0]), str(i[1]), str(i[2]), str(i[3]), str(i[4]), str(i[5]), str(i[6]), str(i[7]), str(i[8]), str(i[9]), str(i[10]))
+                    self.console.print(table)
+
+                    option = self.console.input("[i]¿Desea [bold red1]dar de baja[/] los álbumes y temas asociados a ese intérprete? [bold cyan]Si[/]/[bold red1]No[/][/i][bold cyan]: ")
                     option = option.lower()
                     if  option == "si":
                         sentenciaSQL = "update album set vigente = 0 where id_interprete = %s;"
@@ -161,8 +168,9 @@ class Conectar():
                         cursor.execute(sentenciaSQL2,(id_interprete,))
                         self.conexion.commit()
                         self.conexion.close()
-                        print("Albunes eliminados correctamente")
+                        self.console.print("[i]Albunes [bold red1]eliminados[/] correctamente[/i]")
                     else:
+                        self.console.print("[i][bold red1]No[/] se eliminaron los álbumes ni el intérprete[/i]")
                         self.conexion.commit()
                         self.conexion.close()
                 else:
@@ -264,7 +272,7 @@ class Conectar():
                 cursor.execute(revisoTemasSQL,(cod_album,))
                 resultados = cursor.fetchall()
                 if len(resultados) > 0:
-                    self.console.print("[i][bold red1]No[/] se puede eliminar el album porque hay temas asociados a ese id[/i][bold red1]: ")
+                    self.console.print("[i][bold red1]No[/] se puede eliminar el álbum porque hay temas asociados a ese id[/i][bold red1]: ")
                     #Table
                     table = Table(title="Album")
                     table.add_column("ID", style="cyan",justify="center")
@@ -283,7 +291,7 @@ class Conectar():
                     self.console.print(table)
 
                     self.console.rule("", style="bold orange_red1")
-                    option = self.console.input("[i]¿Desea [bold red1]dar de baja[/] los temas asociados a ese album? [bold cyan]Si[/]/[bold red1]No[/][/i][bold cyan]: ")
+                    option = self.console.input("[i]¿Desea [bold red1]dar de baja[/] los temas asociados a ese álbum? [bold cyan]Si[/]/[bold red1]No[/][/i][bold cyan]: ")
                     option = option.lower()
                     if option == "si":
                         sentenciaSQL = "update tema inner join album on tema.id_album = album.id_album set tema.vigente = 0 where album.cod_album = %s"
@@ -378,6 +386,45 @@ class Conectar():
             except mysql.connector.Error as descripcionError:
                 print("¡Ha ocurrido un error! Intente nuevamente.", descripcionError)
 
+
+    def ExistenciaId (self,id,tabla):
+        if self.conexion.is_connected():
+            try:
+                if(id == '' or id == ' '):
+                    return False
+                cursor = self.conexion.cursor()
+                sentenciaSQL = "SELECT * FROM "+tabla+" WHERE vigente = 1 AND id_"+tabla+" = %s"
+                cursor.execute(sentenciaSQL,(id,))
+                resultados = cursor.fetchall()
+                # self.conexion.commit()
+                # self.conexion.close()                
+                if len(resultados) == 0:
+                    return False
+                else:
+                    return True
+            except mysql.connector.Error as descripcionError:
+                print("¡Ha ocurrido un error! Intente nuevamente.", descripcionError)
+
+    def ExistenciaCod (self,id,tabla):
+        if self.conexion.is_connected():
+            try:
+                if(id == '' or id == ' '):
+                    return False
+                cursor = self.conexion.cursor()
+                sentenciaSQL = "SELECT * FROM album WHERE vigente = 1 AND cod_album = %s"
+                cursor.execute(sentenciaSQL,(id,))
+                resultados = cursor.fetchall()
+                # self.conexion.commit()
+                # self.conexion.close()                
+                if len(resultados) == 0:
+                    return False
+                else:
+                    return True
+            except mysql.connector.Error as descripcionError:
+                print("¡Ha ocurrido un error! Intente nuevamente.", descripcionError)
+    def SalirOpcion(self):
+        self.console.print("[i]¡[bold red1]Saliendo[/] del programa![/i]", justify="center")
+        return Break()
 
 #------------------------------------------------------------------------------------------------------
 class Interprete():     

@@ -1,3 +1,4 @@
+from ast import Break
 import modelo
 # Módulos Rich:
 from rich.table import Table
@@ -130,8 +131,17 @@ def ListarBusquedaNombreAlbum():
 # ABM álbums
 #---------------------------------------------------------------------------------------
 def InsertarAlbum():
+    
+    console.print("[i]---- Para volver al menú escriba [bold red1]Salir[/] ----[/i]")  
     console.rule("", style="bold orange_red1")
-    cod_album = int(console.input("[i]Ingrese el [cyan bold]código[/] del nuevo álbum[/i][bold cyan]: "))
+    cod_album = (console.input("[i]Ingrese el [cyan bold]código[/] del nuevo álbum[/i][bold cyan]: "))
+    if cod_album.lower() == "salir":
+        return Break()
+    try:
+        cod_album = int(cod_album)
+    except: 
+        console.print("El código debe ser un número entero.")
+        return InsertarAlbum()    
     console.rule("", style="bold orange_red1")
     nombre = console.input("[i]Ingrese el [cyan bold]nombre[/] del álbum[/i][bold cyan]: ")
     console.rule("", style="bold orange_red1")
@@ -143,32 +153,54 @@ def InsertarAlbum():
 
     console.rule("", style="bold orange_red1")
     console.print("[i]En caso de que el Intérprete [bold red1]no[/] esté en la lista, [bold cyan]ingrese 0[/] para agregarlo.[/i]")  
-    id_interprete = int(console.input("[i]Ingrese el [bold cyan]ID[/] del intérprete[/i][bold cyan]: "))
+    id_interprete = (console.input("[i]Ingrese el [bold cyan]ID[/] del intérprete[/i][bold cyan]: "))
     id_interprete = InsertarInterprete() if id_interprete == 0 else id_interprete # Hago una Operación Ternaria para que el ListarGenero() sí se ejecute.
     console.rule("", style="bold orange_red1")
+    while con.ExistenciaId(id_interprete, "interprete") == False:
+        id_interprete = InsertarInterprete() if id_interprete == 0 else id_interprete # Hago una Operación Ternaria para que el ListarGenero() sí se ejecute.
+        id_interprete = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: ")
+        console.rule("", style="bold red1")
 
     ListarGenero()
     console.rule("", style="bold orange_red1")
-    id_genero = int(console.input("[i]Ingrese el [bold cyan]ID[/] del Género[/i][bold cyan]: "))
+    id_genero = (console.input("[i]Ingrese el [bold cyan]ID[/] del Género[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")
-    cant_temas = int(console.input("[i]Ingrese la [bold cyan]cantidad[/] de temas[/i][bold cyan]: ")) # Menos este, por supuesto.
+    while con.ExistenciaId(id_genero, "genero") == False:
+        id_genero = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: " )
+        console.rule("", style="bold red1")
+  
+    cant_temas = (console.input("[i]Ingrese la [bold cyan]cantidad[/] de temas[/i][bold cyan]: ")) # Menos este, por supuesto.
+    cant_temas = int(cant_temas if cant_temas.isdigit() else 0)
     console.rule("", style="bold orange_red1")
 
     ListarDiscografica()
     console.rule("", style="bold orange_red1")
-    id_discografica = int(console.input("[i]Ingrese el [bold cyan]ID[/] de la discografica[/i][bold cyan]: "))
+    id_discografica = (console.input("[i]Ingrese el [bold cyan]ID[/] de la discografica[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")
+    while con.ExistenciaId(id_discografica, "discografica") == False:
+        id_discografica = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: ")
+        console.rule("", style="bold red1")
+        
 
     ListarFormato()
+    
     console.rule("", style="bold orange_red1")
-    id_formato = int(console.input("[i]Ingrese el [bold cyan]ID[/] del formato[/i][bold cyan]: "))
+    id_formato = (console.input("[i]Ingrese el [bold cyan]ID[/] del formato[/i][bold cyan]: "))
+    id_formato = int(id_formato if id_formato.isdigit() else 0)
     console.rule("", style="bold orange_red1")
+    while con.ExistenciaId(id_formato, "formato") == False:
+        id_formato = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: ")
+        console.rule("", style="bold red1")
+        
+
     # Hasta acá.
     fec_lanzamiento = console.input("[i]Ingrese la [bold cyan]fecha de lanzamiento[/] (aaaa-mm-dd)[bold cyan]: ")
     console.rule("", style="bold orange_red1")
-    precio = float(console.input("[i]Ingrese el [bold cyan]precio[/][/i][bold cyan]: "))
+    precio = (console.input("[i]Ingrese el [bold cyan]precio[/][/i][bold cyan]: "))
+    precio = float(precio if precio != "" else 0)
     console.rule("", style="bold orange_red1")
-    cantidad = int(console.input("[i]Ingrese [bold cyan]cantidad disponible[/] de este álbum[/i][bold cyan]: "))
+    cantidad = (console.input("[i]Ingrese [bold cyan]cantidad disponible[/] de este álbum[/i][bold cyan]: "))
+    cantidad = int(cantidad if cantidad.isdigit() else 0)
     console.rule("", style="bold orange_red1")
     caratula = console.input("[i]Ingrese la [bold cyan]dirección web[/] de la Carátula[/i][bold cyan]: ")
     console.rule("", style="bold orange_red1")
@@ -181,69 +213,89 @@ def InsertarAlbum():
     #    print(album)
 
 def ModificarAlbum():
+    con = modelo.Conectar()
     ListarAlbumesPorArtistas()
+    console.print("[i]---- Para volver al menú escriba [bold red1]Salir[/] ----[/i]")  
 
     console.rule("", style="bold orange_red1")
-    cod_album = int(console.input("[i]Ingrese el código del [bold cyan]Álbum[/] que quiere modificar[/i][bold cyan]: "))
+    cod_album = (console.input("[i]Ingrese el código del [bold cyan]Álbum[/] que quiere modificar[/i][bold cyan]: "))
+    if cod_album.lower() == "salir":
+        return Break()
     console.rule("", style="bold orange_red1")
+    while con.ExistenciaCod(cod_album, "album") == False:
+        cod_album = console.input("[i]Por favor, [bold cyan]ingrese un código[/] válido[/i]: ")
+        console.rule("", style="bold red1")
+
+
     nombre = console.input("[i]Ingrese el [bold cyan]nuevo nombre[/] del álbum[/i][bold cyan]: ")
     console.rule("", style="bold orange_red1")
 
     # Hay que tener los siguientes datos ya dentro de la base:
-    con = modelo.Conectar()
 
     ListarArtistasVigentes()
     console.rule("", style="bold orange_red1")
     id_interprete = int(console.input("[i]Ingrese el [bold cyan]ID[/] del intérprete[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")
+    while con.ExistenciaId(id_interprete, "interprete") == False:
+        id_interprete = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: ")
+        console.rule("", style="bold red1")
 
     ListarGenero()
     console.rule("", style="bold orange_red1")
     id_genero = int(console.input("[i]Ingrese el [bold cyan]ID[/] del Género[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")
-    cant_temas = int(console.input("[i]Ingrese la [bold cyan]cantidad[/] de temas[/i][bold cyan]: ")) # Menos este, por supuesto.
+    while con.ExistenciaId(id_genero, "genero") == False:
+        id_genero = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: " )
+        console.rule("", style="bold red1")
+    cant_temas = (console.input("[i]Ingrese la [bold cyan]cantidad[/] de temas[/i][bold cyan]: ")) # Menos este, por supuesto.
+    cant_temas = int(cant_temas if cant_temas.isdigit() else 0)
     console.rule("", style="bold orange_red1")
 
-
-    #cant_temas = int(input("\nIngrese la cantidad de temas: ")) # Menos este, por supuesto.
     ListarDiscografica()
     console.rule("", style="bold orange_red1")
     id_discografica = int(console.input("[i]Ingrese el [bold cyan]ID[/] de la discografica[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")
-    
+    while con.ExistenciaId(id_discografica, "discografica") == False:
+        id_discografica = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: ")
+        console.rule("", style="bold red1")    
 
     ListarFormato()
     console.rule("", style="bold orange_red1")
     id_formato = int(console.input("[i]Ingrese el [bold cyan]ID[/] del formato[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")
+    while con.ExistenciaId(id_formato, "formato") == False:
+        id_formato = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: ")
+        console.rule("", style="bold red1")
     # Hasta acá.
     fec_lanzamiento = console.input("[i]Ingrese la [bold cyan]fecha de lanzamiento[/] (aaaa-mm-dd)[bold cyan]: ")
     console.rule("", style="bold orange_red1")
-    precio = float(console.input("[i]Ingrese el [bold cyan]precio[/][/i][bold cyan]: "))
+    precio = (console.input("[i]Ingrese el [bold cyan]precio[/][/i][bold cyan]: "))
+    precio = float(precio if precio != "" else 0)
     console.rule("", style="bold orange_red1")
-    cantidad = int(console.input("[i]Ingrese [bold cyan]cantidad disponible[/] de este álbum[/i][bold cyan]: "))
+    cantidad = (console.input("[i]Ingrese [bold cyan]cantidad disponible[/] de este álbum[/i][bold cyan]: "))
+    cantidad = int(cantidad if cantidad.isdigit() else 0)
     console.rule("", style="bold orange_red1")
     caratula = console.input("[i]Ingrese la [bold cyan]dirección web[/] de la Carátula[/i][bold cyan]: ")
     console.rule("", style="bold orange_red1")
 
     nuevoAlbum = modelo.Album(0,cod_album,nombre,id_interprete,id_genero,cant_temas,id_discografica,id_formato,fec_lanzamiento,precio,cantidad,caratula,1)
     con.ModificarAlbum(nuevoAlbum)
-    # Cod Hernán (idea de mostrar albums despues de insertar):
-    #listadoA = con.ListarAlbumes()
-    #    for album in listadoA:
-    #        print(album)
-def EliminarAlbum():
-    ListarAlbumesPorArtistas()
     
-    console.rule("", style="bold orange_red1")
-    cod_album = int(console.input("[i]Ingrese el [bold cyan]código del Álbum[/] que quiere eliminar[/i][bold cyan]: "))
-    console.rule("", style="bold orange_red1")
-
-    # Cod Hernán (idea de mostrar albums despues de insertar):
-    #listadoA = con.ListarAlbumes()
-    #    for album in listadoA:
-    #        print(album)
+def EliminarAlbum():
     con = modelo.Conectar()
+    ListarAlbumesPorArtistas()
+    console.print("[i]---- Para volver al menú escriba [bold red1]Salir[/] ----[/i]")  
+
+    console.rule("", style="bold orange_red1")
+    cod_album = (console.input("[i]Ingrese el [bold cyan]código del Álbum[/] que quiere eliminar[/i][bold cyan]: "))
+    if cod_album.lower() == "salir":
+        return Break()
+    console.rule("", style="bold orange_red1")
+    while con.ExistenciaCod(cod_album, "album") == False:
+        cod_album = console.input("[i]Por favor, [bold cyan]ingrese un código[/] válido[/i]: ")
+        console.rule("", style="bold red1")
+
+
     con.EliminarAlbum(cod_album)
 
 # ABM intérpretes
@@ -251,9 +303,13 @@ def EliminarAlbum():
 def InsertarInterprete():
     datos = ["el [cyan bold]nombre[/]", "el [cyan bold]apellido[/]", "la [cyan bold]nacionalidad[/]", "la [cyan bold]foto[/]"] 
     inputs = []
+    console.print("[i]---- Para volver al menú escriba [bold red1]Salir[/] ----[/i]")  
+
     for i in datos:
         console.rule("", style="bold orange_red1")
         inputs.append(console.input("[i]Ingrese "+ i +" del intérprete[/i][bold cyan]: "))
+        if inputs[-1].lower() == "salir":
+            return Break()
     console.rule("", style="bold orange_red1")
     
     nuevoInterprete = modelo.Interprete(0, inputs[0], inputs[1], inputs[2], inputs[3], 1)#El 1 es para darlo de alta en vigente. Si el vigente es 0 (false) no se mostrará.
@@ -262,14 +318,20 @@ def InsertarInterprete():
 
 def ModificarInterprete():
     ListarArtistasVigentes()
+    console.print("[i]---- Para volver al menú escriba [bold red1]Salir[/] ----[/i]")  
+
     datos = ["el [cyan bold]ID[/]", "el [cyan bold]nuevo nombre[/]", "el [cyan bold]nuevo apellido[/]", "la [cyan bold]nueva nacionalidad[/]", "la [cyan bold]nueva dirección web[/] de la foto"]
     inputs = []
     for i in datos:
         console.rule("", style="bold orange_red1")
         if i == "el [cyan bold]ID[/]":
             inputs.append(console.input("[i]Ingrese "+ i +" del intérprete que quiere modificar[/i][bold cyan]: "))
+            if inputs[-1].lower() == "salir":
+                return Break()
             continue
         inputs.append(console.input("[i]Ingrese "+ i +" del intérprete[/i][bold cyan]: "))
+        if inputs[-1].lower() == "salir":
+            return Break()
     console.rule("", style="bold orange_red1")
     
     nuevoInterprete = modelo.Interprete(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], 1)#el 1 es para que no se elimine... mantenerlo vigente
@@ -277,10 +339,14 @@ def ModificarInterprete():
     con.ModificarInterprete(nuevoInterprete)
 
 def EliminarInterprete():
+    con = modelo.Conectar()
     ListarArtistasVigentes()
+    console.print("[i]---- Para volver al menú escriba [bold red1]Salir[/] ----[/i]")  
     console.rule("", style="bold orange_red1")
-    id_interprete = int(console.input("[i]Ingrese el [bold cyan]ID[/] del intérprete que quiere eliminar[/i][bold cyan]: "))
+    id_interprete = (console.input("[i]Ingrese el [bold cyan]ID[/] del intérprete que quiere eliminar[/i][bold cyan]: "))
+    if id_interprete.lower() == "salir":
+        return Break()
+    id_interprete = int(id_interprete if id_interprete != "" else 0)
     console.rule("", style="bold orange_red1")
     
-    con = modelo.Conectar()
     con.EliminarInterprete(id_interprete)

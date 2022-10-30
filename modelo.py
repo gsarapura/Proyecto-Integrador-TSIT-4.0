@@ -326,6 +326,22 @@ class Conectar():
                 return resultados
             except mysql.connector.Error as descripcionError:
                 print("¡Error al Buscar!",descripcionError)
+    
+    def ListarBusquedaNombreAlbum(self, nombre):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                sentenciaSQL = """SELECT * FROM album WHERE album.nombre like %s"""
+
+                cursor.execute(sentenciaSQL, (('%' + nombre + '%',)))
+                resultados = cursor.fetchall()
+
+                self.conexion.commit()
+                self.conexion.close()
+                return resultados
+            except mysql.connector.Error as descripcionError:
+                print("¡Ha ocurrido un error! Intente nuevamente.", descripcionError)
+
 
 #------------------------------------------------------------------------------------------------------
 class Interprete():     

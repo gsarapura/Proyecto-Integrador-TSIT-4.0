@@ -3,6 +3,7 @@ import modelo
 from rich.table import Table
 from rich.console import Console
 from rich.align import Align
+from rich import box
 
 console = Console(width=100)
 
@@ -163,6 +164,7 @@ def ModificarAlbum():
     id_interprete = int(console.input("[i]Ingrese el [bold cyan]ID[/] del intérprete[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")
 
+
     TablaGenero()
     console.rule("", style="bold orange_red1")
     id_genero = int(console.input("[i]Ingrese el [bold cyan]ID[/] del Género[/i][bold cyan]: "))
@@ -170,11 +172,13 @@ def ModificarAlbum():
     cant_temas = int(console.input("[i]Ingrese la [bold cyan]cantidad[/] de temas[/i][bold cyan]: ")) # Menos este, por supuesto.
     console.rule("", style="bold orange_red1")
 
+
     #cant_temas = int(input("\nIngrese la cantidad de temas: ")) # Menos este, por supuesto.
     TablaDiscografica()
     console.rule("", style="bold orange_red1")
     id_discografica = int(console.input("[i]Ingrese el [bold cyan]ID[/] de la discografica[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")
+    
 
     TablaFormato()
     console.rule("", style="bold orange_red1")
@@ -227,3 +231,44 @@ def EliminarInterprete():
     
     con = modelo.Conectar()
     con.EliminarInterprete(id_interprete)
+
+
+def ListarBusquedaNombreAlbum():
+    con = modelo.Conectar()
+    tabla_busqueda = Table(expand=True, style="cyan", box=box.ASCII2, show_header=False)
+    tabla_busqueda.add_row("[i]Ingrese el [bold cyan]nombre del álbum[/][/i] que desea buscar: ")
+    console = Console()
+    console.print(tabla_busqueda)
+
+    # Asegurar que ingrese un valor. 
+    nombre = ""
+    while nombre == "":
+        nombre = console.input("[bold cyan]>: ")
+        if nombre == "":
+            console.print("[i]Ingrese el [bold cyan]nombre del álbum[/][/i]: ")
+        
+
+    table = Table(title="Albumes coincidentes: ")
+    coincidencias = con.ListarBusquedaNombreAlbum(nombre)
+    table.add_column("ID", style="cyan",justify="center")
+    table.add_column("COD. ÁLBUM", style="cyan", justify="center")
+    table.add_column("NOMBRE", style="cyan", justify="center")
+    table.add_column("ID INTÉR.", style="cyan", justify="center")
+    table.add_column("ID GÉN.", style="cyan", justify="center")
+    table.add_column("CANT. TEMAS", style="cyan", justify="center")
+    table.add_column("ID DISCO.", style="cyan", justify="center")
+    table.add_column("ID FORMATO", style="cyan", justify="center")
+    table.add_column("FECHA", style="cyan", justify="center")
+    table.add_column("PRECIO", style="cyan", justify="center")
+    table.add_column("CANTIDAD", style="cyan", justify="center")
+    
+    if len(coincidencias) == 0:
+        console.print("[i][bold red1]No[/] se encontraron coincidencias[/i]. :x:", justify="center")
+        return
+
+    for album in coincidencias:
+        table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(
+            album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]))
+    
+    console.print(table)
+    return

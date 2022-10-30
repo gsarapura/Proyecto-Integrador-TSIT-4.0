@@ -1,7 +1,7 @@
 import controlador
 # import modelo
 ## Módulos externos
-import os
+from os import system, name as osname
 from rich.console  import Console
 # Crear tablas:
 from rich import box
@@ -14,10 +14,10 @@ from time import sleep
 console = Console(width=100)
 
 def clear():
-    try:
-        return os.system('clear')
-    except:
-        return os.system('cls')
+    if osname == "nt":
+        return system('cls')
+    else:
+        return system('clear')
 
 def barra_progreso():
     for step in track(range(100), description="[blue]Procesando"):
@@ -225,7 +225,9 @@ while True:
         controlador.ListarAlbumesPorGenero()
         enter_continuar()
     elif opcion == 4:
-        None
+        barra_progreso()
+        controlador.ListarBusquedaNombreAlbum()
+        enter_continuar()
     elif opcion == 5:
         ABMInterprete()
     elif opcion == 6:

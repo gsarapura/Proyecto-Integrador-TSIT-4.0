@@ -123,8 +123,8 @@ def ListarBusquedaNombreAlbum():
 
     for album in coincidencias:
         table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]), str(album[9]), str(album[10]))
-    
-    console.print(table)
+    consola = Console(width=140)
+    consola.print(table)
     return
 
 # ABM álbums

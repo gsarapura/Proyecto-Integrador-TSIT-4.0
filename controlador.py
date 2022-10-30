@@ -235,9 +235,9 @@ def EliminarInterprete():
 
 def ListarBusquedaNombreAlbum():
     con = modelo.Conectar()
+
     tabla_busqueda = Table(expand=True, style="cyan", box=box.ASCII2, show_header=False)
     tabla_busqueda.add_row("[i]Ingrese el [bold cyan]nombre del álbum[/][/i] que desea buscar: ")
-    console = Console()
     console.print(tabla_busqueda)
 
     # Asegurar que ingrese un valor. 
@@ -245,7 +245,8 @@ def ListarBusquedaNombreAlbum():
     while nombre == "":
         nombre = console.input("[bold cyan]>: ")
         if nombre == "":
-            console.print("[i]Ingrese el [bold cyan]nombre del álbum[/][/i]: ")
+            console.rule("", style="bold red1")
+            console.print("[i]Por favor, ingrese [bold cyan]nombre del álbum[/][/i]: ")
         
 
     table = Table(title="Albumes coincidentes: ")

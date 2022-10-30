@@ -179,28 +179,33 @@ def ListarBusquedaNombreAlbum():
     tabla_busqueda.add_row("[i]Ingrese el [bold cyan]nombre del álbum[/][/i] que desea buscar: ")
     console = Console()
     console.print(tabla_busqueda)
-    nombre = console.input("[bold cyan]>: ")
-    con = modelo.Conectar()
-    print=" "
-    print=" "
-    print=" "
-    print=" "
+
+    # Asegurar que ingrese un valor. 
+    nombre = ""
+    while nombre == "":
+        nombre = console.input("[bold cyan]>: ")
+        if nombre == "":
+            console.print("[i]Ingrese el [bold cyan]nombre del álbum[/][/i]: ")
+        
 
     table = Table(title="Albumes coincidentes: ")
     coincidencias = con.ListarBusquedaNombreAlbum(nombre)
-    table.add_column("COD. ÁLBUM", style="cyan")
-    table.add_column("NOMBRE", style="cyan")
-    table.add_column("INTÉRPRETE", style="cyan")
-    table.add_column("GÉNERO", style="cyan")
-    table.add_column("DISCOGRÁFICA", style="cyan")
-    table.add_column("PRECIO", style="cyan")
-    table.add_column("CANTIDAD", style="cyan")
-    table.add_column("FORMATO", style="cyan")
-    table.add_column("FECHA", style="cyan")
-
+    table.add_column("ID", style="cyan",justify="center")
+    table.add_column("COD. ÁLBUM", style="cyan", justify="center")
+    table.add_column("NOMBRE", style="cyan", justify="center")
+    table.add_column("ID INTÉR.", style="cyan", justify="center")
+    table.add_column("ID GÉN.", style="cyan", justify="center")
+    table.add_column("CANT. TEMAS", style="cyan", justify="center")
+    table.add_column("ID DISCO.", style="cyan", justify="center")
+    table.add_column("ID FORMATO", style="cyan", justify="center")
+    table.add_column("FECHA", style="cyan", justify="center")
+    table.add_column("PRECIO", style="cyan", justify="center")
+    table.add_column("CANTIDAD", style="cyan", justify="center")
+    
     if len(coincidencias) == 0:
-        print("No se encontraron coincidencias.")
+        console.print("[i][bold red1]No[/] se encontraron coincidencias[/i]. :x:", justify="center")
         return
+
     for album in coincidencias:
         table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(
             album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]))

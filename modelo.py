@@ -11,7 +11,7 @@ class Conectar():
                 host = 'localhost',
                 port = 3306,
                 user = 'root',
-                password = '1234',
+                password = '',
                 db = 'disqueria'
 
             )
@@ -329,14 +329,12 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sentenciaSQL = f"SELECT * FROM album WHERE album.nombre like '%{nombre}%';"
+                sentenciaSQL = """SELECT * FROM album WHERE album.nombre like %s"""
 
-                # data = (album.nombre,)
-
-                cursor.execute(sentenciaSQL)
+                cursor.execute(sentenciaSQL, (('%' + nombre + '%',)))
                 resultados = cursor.fetchall()
 
-                self.conexion.close()
+                self.conexion.commit()
                 self.conexion.close()
                 return resultados
             except mysql.connector.Error as descripcionError:

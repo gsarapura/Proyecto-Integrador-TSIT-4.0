@@ -1,4 +1,4 @@
-# Proyecto-Integrador-TSIT-4.0
+# Proyecto-Integrador-TSIT-4.0 - Disquería
 
 ## Integrantes
 

@@ -105,9 +105,10 @@ class Conectar():
                         id = id[0][0]
                         self.conexion.commit()
                         self.conexion.close()
-                        print("Intérprete dado de alta nuevamente")
+                        self.console.print("[i]Intérprete dado de alta [bold green3]nuevamente[/][/i] :smiley:",justify="center")
                     else:
                         print("Intérprete no dado de alta nuevamente")
+                        self.console.print("[i]Intérprete[bold red1]no[/] dado de alta.[/i]", descripcionError)
                         self.conexion.commit()
                         self.conexion.close()
                 return id if id != 0 else 0
@@ -137,26 +138,26 @@ class Conectar():
             try:
                 cursor = self.conexion.cursor()
                 # cursor = self.conexion.cursor(buffered=True)
-                revisoAlbumsSQL = "select * from album where id_interprete = %s and vigente = 1"
+                revisoAlbumsSQL = """select album.id_album, album.cod_album, album.nombre, interprete.apellido, interprete.nombre, album.cant_temas
+                    from album 
+                    INNER JOIN interprete
+                    on album.id_interprete = interprete.id_interprete
+                    where album.id_interprete = %s and album.vigente = 1"""
                 cursor.execute(revisoAlbumsSQL,(id_interprete,))
                 resultados = cursor.fetchall()
                 if len(resultados) > 0:
                     self.console.print("[i][bold red1]No[/] se puede eliminar el interprete porque hay álbumes y temas asociados a ese Id[/i][bold red1]: ")
                     #Table
-                    table = Table(title="Interprete")
+                    table = Table(title="Álbumes")
                     table.add_column("ID", style="cyan",justify="center")
                     table.add_column("COD. ÁLBUM", style="cyan", justify="center")
                     table.add_column("NOMBRE", style="cyan", justify="center")
-                    table.add_column("ID INTÉR.", style="cyan", justify="center")
-                    table.add_column("ID GÉN.", style="cyan", justify="center")
+                    table.add_column("APELLIDO ART.", style="cyan", justify="center")
+                    table.add_column("NOMBRE ART.", style="cyan", justify="center")
                     table.add_column("CANT. TEMAS", style="cyan", justify="center")
-                    table.add_column("ID DISCO.", style="cyan", justify="center")
-                    table.add_column("ID FORMATO", style="cyan", justify="center")
-                    table.add_column("FECHA", style="cyan", justify="center")
-                    table.add_column("PRECIO", style="cyan", justify="center")
-                    table.add_column("CANTIDAD", style="cyan", justify="center")
+                    
                     for i in resultados:
-                        table.add_row(str(i[0]), str(i[1]), str(i[2]), str(i[3]), str(i[4]), str(i[5]), str(i[6]), str(i[7]), str(i[8]), str(i[9]), str(i[10]))
+                        table.add_row(str(i[0]), str(i[1]), str(i[2]), str(i[3]), str(i[4]), str(i[5]))
                     self.console.print(table)
 
                     option = self.console.input("[i]¿Desea [bold red1]dar de baja[/] los álbumes y temas asociados a ese intérprete? [bold cyan]Si[/]/[bold red1]No[/][/i][bold cyan]: ")
@@ -167,10 +168,10 @@ class Conectar():
                         cursor.execute(sentenciaSQL,(id_interprete,))
                         cursor.execute(sentenciaSQL2,(id_interprete,))
                         self.conexion.commit()
-                        self.conexion.close()
-                        self.console.print("[i]Albunes [bold red1]eliminados[/] correctamente[/i]")
+                        #self.conexion.close()
+                        self.console.print("[i]Álbumes eliminados [bold green3]correctamente[/i] :smiley:", justify="center")
                     else:
-                        self.console.print("[i][bold red1]No[/] se eliminaron los álbumes ni el intérprete[/i]")
+                        self.console.print("[i][bold red1]No[/] se eliminaron los álbumes ni el intérprete[/i]", justify="center")
                         self.conexion.commit()
                         self.conexion.close()
                 else:
@@ -201,7 +202,7 @@ class Conectar():
 
                 self.conexion.commit()
                 self.conexion.close()
-                print("Género insertado correctamente")
+                self.console.print("[i]Género insertado [bold green3]correctamente[/][/i] :smiley:",justify="center")
 
             except mysql.connector.Error as descripcionError:
                 self.console.print("[i]¡[bold red1]Error[/] al guardar![/i]", descripcionError)

@@ -68,7 +68,7 @@ def ABMInterprete():
             tabla_op.add_row("[i]Ingrese su [bold cyan]opción[/][/i] :smiley:: ")
             console.print(tabla_op)
             opcion = int(console.input("[bold cyan]>: "))
-            assert opcion <= 6
+            assert opcion <= 4
         except ValueError:
             valuerror_abm = 1
             incorrecto_abm = 0 

@@ -340,10 +340,10 @@ def EliminarAlbum():
 # ABM intérpretes
 #---------------------------------------------------------------------------------------
 def InsertarInterprete():
-    datos = ["el [cyan bold]nombre[/]", "el [cyan bold]apellido[/]", "la [cyan bold]nacionalidad[/]", "la [cyan bold]foto[/]"] 
-    inputs = []
-    console.print("[i]---- Para volver al menú escriba [bold red1]Salir[/] ----[/i]")  
+    console.print("[i][bold orange_red1]----[/] Para volver al menú escriba [bold red1]salir[/] [bold orange_red1]----[/][/i]", justify="center")  
 
+    datos = ["el [cyan bold]nombre[/]", "el [cyan bold]apellido[/]", "la [cyan bold]nacionalidad[/]", "la [cyan bold]foto[/]"] 
+    inputs = [] 
     for i in datos:
         console.rule("", style="bold orange_red1")
         inputs.append(console.input("[i]Ingrese "+ i +" del intérprete[/i][bold cyan]: "))
@@ -357,35 +357,48 @@ def InsertarInterprete():
 
 def ModificarInterprete():
     ListarArtistasVigentes()
-    console.print("[i]---- Para volver al menú escriba [bold red1]Salir[/] ----[/i]")  
+    console.print("[i][bold orange_red1]----[/] Para volver al menú escriba [bold red1]salir[/] [bold orange_red1]----[/][/i]", justify="center")   
+    con = modelo.Conectar()
 
     datos = ["el [cyan bold]ID[/]", "el [cyan bold]nuevo nombre[/]", "el [cyan bold]nuevo apellido[/]", "la [cyan bold]nueva nacionalidad[/]", "la [cyan bold]nueva dirección web[/] de la foto"]
     inputs = []
+    console.rule("", style="bold orange_red1")
     for i in datos:
-        console.rule("", style="bold orange_red1")
         if i == "el [cyan bold]ID[/]":
             inputs.append(console.input("[i]Ingrese "+ i +" del intérprete que quiere modificar[/i][bold cyan]: "))
+
             if inputs[-1].lower() == "salir":
                 return Break()
+           
+            # Verificar id
+            while con.ExistenciaId(inputs[0], "interprete") == False:
+                console.rule("", style="bold red1")
+                inputs[0] = console.input("[i]Por favor, ingrese un [bold green3]ID válido[/][/i]: ")
+            
             continue
+            
+        console.rule("", style="bold orange_red1")
         inputs.append(console.input("[i]Ingrese "+ i +" del intérprete[/i][bold cyan]: "))
+
         if inputs[-1].lower() == "salir":
             return Break()
-    console.rule("", style="bold orange_red1")
     
-    nuevoInterprete = modelo.Interprete(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], 1)#el 1 es para que no se elimine... mantenerlo vigente
-    con = modelo.Conectar()
+    console.rule("", style="bold orange_red1")
+    nuevoInterprete = modelo.Interprete(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], 1)#el 1 es para que no se elimine... mantenerlo vigente   
     con.ModificarInterprete(nuevoInterprete)
 
 def EliminarInterprete():
     con = modelo.Conectar()
     ListarArtistasVigentes()
-    console.print("[i]---- Para volver al menú escriba [bold red1]Salir[/] ----[/i]")  
+    console.print("[i][bold orange_red1]----[/] Para volver al menú escriba [bold red1]salir[/] [bold orange_red1]----[/][/i]", justify="center")  
     console.rule("", style="bold orange_red1")
+
     id_interprete = (console.input("[i]Ingrese el [bold cyan]ID[/] del intérprete que quiere eliminar[/i][bold cyan]: "))
+    console.rule("", style="bold orange_red1")
     if id_interprete.lower() == "salir":
         return Break()
-    id_interprete = int(id_interprete if id_interprete != "" else 0)
-    console.rule("", style="bold orange_red1")
+    while con.ExistenciaId(id_interprete, "interprete") == False:
+        id_interprete = console.input("[i]Por favor, ingrese un [bold green3]ID válido[/][/i]: ")
+        console.rule("", style="bold red1")
     
     con.EliminarInterprete(id_interprete)

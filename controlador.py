@@ -221,11 +221,16 @@ def InsertarAlbum():
             fec_lanzamiento = console.input("[i]Por favor, ingrese el formato de fecha [bold green3]aaaa-mm-dd[/i][/]: ")
             console.rule("", style="bold red1")
    
-
+    # Validar float:
     precio = console.input("[i]Ingrese el [bold cyan]precio[/][/i][bold cyan]: ")
+    while isinstance(precio, float) == False:
+        try:
+            precio = float(precio)
+        except ValueError:
+            console.rule("", style="bold red1")
+            precio = console.input("[i]Por favor, ingrese [bold green3]números[/][bold]:[/i] ")
+
     console.rule("", style="bold orange_red1")
-    precio = validar_entero(precio)
-            
     cantidad = (console.input("[i]Ingrese [bold cyan]cantidad disponible[/] de este álbum[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")
     cantidad = validar_entero(cantidad)
@@ -248,7 +253,7 @@ def ModificarAlbum():
         return Break()
     console.rule("", style="bold orange_red1")
     while con.ExistenciaCod(cod_album, "album") == False:
-        cod_album = console.input("[i]Por favor, ingrese un [bold green3]ID válido[/][/i]: ")
+        cod_album = console.input("[i]Por favor, ingrese un [bold green3]código válido[/][/i]: ")
         console.rule("", style="bold red1")
 
 
@@ -306,10 +311,15 @@ def ModificarAlbum():
             fec_lanzamiento = console.input("[i]Por favor, ingrese el formato de fecha [bold green3]aaaa-mm-dd[/i][/]: ")
             console.rule("", style="bold red1")
     
-    precio = (console.input("[i]Ingrese el [bold cyan]precio[/][/i][bold cyan]: "))
-    console.rule("", style="bold orange_red1")
-    precio = validar_entero(precio)
+    precio = console.input("[i]Ingrese el [bold cyan]precio[/][/i][bold cyan]: ")
+    while isinstance(precio, float) == False:
+        try:
+            precio = float(precio)
+        except ValueError:
+            console.rule("", style="bold red1")
+            precio = console.input("[i]Por favor, ingrese [bold green3]números[/][bold]:[/i] ")
 
+    console.rule("", style="bold orange_red1")
     cantidad = (console.input("[i]Ingrese [bold cyan]cantidad disponible[/] de este álbum[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")
     cantidad = validar_entero(cantidad)

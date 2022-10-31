@@ -92,8 +92,9 @@ class Conectar():
                     # self.conexion.commit() # no hace falta porque ya se cierra al obtener el id generado
                     # self.conexion.close()
                 else:
-                    print("El intérprete ya existe")
-                    option = input("¿Desea darlo de alta nuevamente? (Si/No): ")
+                    self.console.print("[i]El intérprete [bold green3]ya existe[/].[/i]")
+                    option = self.console.input("[i]¿Desea darlo de alta nuevamente? ([bold cyan]Si[/]/[bold red1]No[/])[/i][bold cyan]: ")
+                    self.console.rule("", style="bold orange_red1")
                     option = option.lower()
                     if option == "si":
                         sentenciaSQL = "update interprete set vigente = 1 where nombre = %s and apellido = %s"
@@ -107,8 +108,7 @@ class Conectar():
                         self.conexion.close()
                         self.console.print("[i]Intérprete dado de alta [bold green3]nuevamente[/][/i] :smiley:",justify="center")
                     else:
-                        print("Intérprete no dado de alta nuevamente")
-                        self.console.print("[i]Intérprete[bold red1]no[/] dado de alta.[/i]", descripcionError)
+                        self.console.print("[i]Intérprete [bold red1]no[/] dado de alta.[/i]", descripcionError)
                         self.conexion.commit()
                         self.conexion.close()
                 return id if id != 0 else 0
@@ -165,11 +165,13 @@ class Conectar():
                     if  option == "si":
                         sentenciaSQL = "update album set vigente = 0 where id_interprete = %s;"
                         sentenciaSQL2 = "update tema set vigente = 0 where id_album in (select id_album from album where id_interprete = %s)"
+                        sentenciaSQL3 = "update interprete set vigente = 0 where id_interprete = %s"
                         cursor.execute(sentenciaSQL,(id_interprete,))
                         cursor.execute(sentenciaSQL2,(id_interprete,))
+                        cursor.execute(sentenciaSQL3,(id_interprete,))
                         self.conexion.commit()
                         #self.conexion.close()
-                        self.console.print("[i]Álbumes eliminados [bold green3]correctamente[/i] :smiley:", justify="center")
+                        self.console.print("[i]Álbumes, temas e intérprete eliminados [bold green3]correctamente[/i] :smiley:", justify="center")
                     else:
                         self.console.print("[i][bold red1]No[/] se eliminaron los álbumes ni el intérprete[/i]", justify="center")
                         self.conexion.commit()

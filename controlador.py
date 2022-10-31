@@ -1,5 +1,6 @@
 from ast import Break
 import modelo
+from datetime import datetime
 # Módulos Rich:
 from rich.table import Table
 from rich.console import Console
@@ -101,129 +102,153 @@ def ListarBusquedaNombreAlbum():
         nombre = console.input("[bold cyan]>: ")
         if nombre == "":
             console.rule("", style="bold red1")
-            console.print("[i]Por favor, ingrese [bold cyan]nombre del álbum[/][/i]: ")
+            console.print("[i]Por favor, ingrese [bold green3]nombre del álbum[/][/i]: ")
         
+    coincidencias = con.ListarBusquedaNombreAlbum(nombre)
 
     table = Table(title="Albumes coincidentes: ")
-    coincidencias = con.ListarBusquedaNombreAlbum(nombre)
-    table.add_column("ID", style="cyan",justify="center")
-    table.add_column("COD. ÁLBUM", style="cyan", justify="center")
-    table.add_column("NOMBRE", style="cyan", justify="center")
-    table.add_column("ID INTÉR.", style="cyan", justify="center")
-    table.add_column("ID GÉN.", style="cyan", justify="center")
-    table.add_column("CANT. TEMAS", style="cyan", justify="center")
-    table.add_column("ID DISCO.", style="cyan", justify="center")
-    table.add_column("ID FORMATO", style="cyan", justify="center")
-    table.add_column("FECHA", style="cyan", justify="center")
-    table.add_column("PRECIO", style="cyan", justify="center")
-    table.add_column("CANTIDAD", style="cyan", justify="center")
+    columnas = ["COD. ÁLBUM", "NOMBRE", "APELLIDO ART.", "NOMBRE ART.", "GÉNERO", "DISCOGRÁFICA", "FECHA LANZAMIENTO", "PRECIO", "CANTIDAD", "FORMATO"]
+    for col in columnas:
+        table.add_column(col, style="cyan", justify="center")
     
     if len(coincidencias) == 0:
         console.print("[i][bold red1]No[/] se encontraron coincidencias[/i]. :x:", justify="center")
         return
 
     for album in coincidencias:
-        table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]), str(album[9]), str(album[10]))
-    consola = Console(width=140)
+        table.add_row(str(album[0]), str(album[1]), str(album[2]), str(album[3]), str(album[4]), str(album[5]), str(album[6]), str(album[7]), str(album[8]), str(album[9]))
+    consola = Console()
     consola.print(table)
     return
+
+# Validaciones
+#---------------------------------------------------------------------------------------
+def validar_entero(dato):
+    while True:
+        if dato.isdigit():
+            return dato
+        else:
+            dato = console.input("[i]Por favor, ingrese [bold green3]enteros[/][bold]:[/i] ")
+            console.rule("", style="bold red1")
 
 # ABM álbums
 #---------------------------------------------------------------------------------------
 def InsertarAlbum():
+    # Abrir conexión
+    con = modelo.Conectar()
     
-    console.print("[i]---- Para volver al menú escriba [bold red1]Salir[/] ----[/i]")  
+    console.print("[i][bold orange_red1]----[/] Para volver al menú escriba [bold red1]salir[/] [bold orange_red1]----[/][/i]", justify="center")  
     console.rule("", style="bold orange_red1")
-    cod_album = (console.input("[i]Ingrese el [cyan bold]código[/] del nuevo álbum[/i][bold cyan]: "))
+    cod_album = (console.input("[i]Ingrese el [cyan bold]código[/] del álbum[/i][bold cyan]: "))
+    
+    # Salida
     if cod_album.lower() == "salir":
         return Break()
+    
+    # Verificar cod sea entero con recursión
     try:
         cod_album = int(cod_album)
     except: 
-        console.print("El código debe ser un número entero.")
-        return InsertarAlbum()    
+        console.print("[i]El código debe ser un [bold green3]número entero[/].[/i]")
+        return InsertarAlbum() 
+    
+    # Nombre
     console.rule("", style="bold orange_red1")
     nombre = console.input("[i]Ingrese el [cyan bold]nombre[/] del álbum[/i][bold cyan]: ")
     console.rule("", style="bold orange_red1")
 
-    # Hay que tener los siguientes datos ya dentro de la base:
-    con = modelo.Conectar()
 
     ListarArtistasVigentes()
 
     console.rule("", style="bold orange_red1")
-    console.print("[i]En caso de que el Intérprete [bold red1]no[/] esté en la lista, [bold cyan]ingrese 0[/] para agregarlo.[/i]")  
+    console.print("[i]En caso de que el intérprete [bold red1]no[/] esté en la lista, [bold cyan]ingrese 0[/] para agregarlo.[/i]")  
     id_interprete = (console.input("[i]Ingrese el [bold cyan]ID[/] del intérprete[/i][bold cyan]: "))
-    id_interprete = InsertarInterprete() if id_interprete == 0 else id_interprete # Hago una Operación Ternaria para que el ListarGenero() sí se ejecute.
+    # Opción de ingresar intérprete
+    id_interprete = InsertarInterprete() if id_interprete == "0" else id_interprete # Hago una Operación Ternaria para que el ListarGenero() sí se ejecute.
     console.rule("", style="bold orange_red1")
-    while con.ExistenciaId(id_interprete, "interprete") == False:
-        id_interprete = InsertarInterprete() if id_interprete == 0 else id_interprete # Hago una Operación Ternaria para que el ListarGenero() sí se ejecute.
-        id_interprete = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: ")
+    # Verificar que sea válido
+    while True:
+        id_interprete = InsertarInterprete() if id_interprete == "0" else id_interprete # Hago una Operación Ternaria para que el ListarGenero() sí se ejecute.
+        if con.ExistenciaId(id_interprete, "interprete"):
+            break # Se sale del bucle cuando existe ID
+        id_interprete = console.input("[i]Por favor, ingrese un [bold green3]ID válido[/][/i]: ")
         console.rule("", style="bold red1")
+
+    #while con.ExistenciaId(id_interprete, "interprete") == False:
+    #    id_interprete = InsertarInterprete() if id_interprete == "0" else id_interprete # Hago una Operación Ternaria para que el ListarGenero() sí se ejecute.
+    #    id_interprete = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: ")
+    #    console.rule("", style="bold red1")
 
     ListarGenero()
     console.rule("", style="bold orange_red1")
-    id_genero = (console.input("[i]Ingrese el [bold cyan]ID[/] del Género[/i][bold cyan]: "))
+    id_genero = (console.input("[i]Ingrese el [bold cyan]ID[/] del género[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")
     while con.ExistenciaId(id_genero, "genero") == False:
-        id_genero = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: " )
+        id_genero = console.input("[i]Por favor, ingrese un [bold green3]ID válido[/][/i]: " )
         console.rule("", style="bold red1")
   
-    cant_temas = (console.input("[i]Ingrese la [bold cyan]cantidad[/] de temas[/i][bold cyan]: ")) # Menos este, por supuesto.
-    cant_temas = int(cant_temas if cant_temas.isdigit() else 0)
+    # Verificar que cant_temas sea un entero:
+    cant_temas = console.input("[i]Ingrese la [bold cyan]cantidad[/] de temas[/i][bold cyan]: ")
     console.rule("", style="bold orange_red1")
+    cant_temas = validar_entero(cant_temas)
 
     ListarDiscografica()
     console.rule("", style="bold orange_red1")
     id_discografica = (console.input("[i]Ingrese el [bold cyan]ID[/] de la discografica[/i][bold cyan]: "))
     console.rule("", style="bold orange_red1")
     while con.ExistenciaId(id_discografica, "discografica") == False:
-        id_discografica = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: ")
+        id_discografica = console.input("[i][i]Por favor, ingrese un [bold green3]ID válido[/][/i]: ")
         console.rule("", style="bold red1")
         
 
     ListarFormato()
-    
     console.rule("", style="bold orange_red1")
     id_formato = (console.input("[i]Ingrese el [bold cyan]ID[/] del formato[/i][bold cyan]: "))
-    id_formato = int(id_formato if id_formato.isdigit() else 0)
     console.rule("", style="bold orange_red1")
     while con.ExistenciaId(id_formato, "formato") == False:
-        id_formato = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: ")
+        id_formato = console.input("[i]Por favor, ingrese un [bold green3]ID válido[/][/i]: ")
         console.rule("", style="bold red1")
-        
-
-    # Hasta acá.
+    
     fec_lanzamiento = console.input("[i]Ingrese la [bold cyan]fecha de lanzamiento[/] (aaaa-mm-dd)[bold cyan]: ")
+    formato = "%Y-%m-%d"
     console.rule("", style="bold orange_red1")
-    precio = (console.input("[i]Ingrese el [bold cyan]precio[/][/i][bold cyan]: "))
-    precio = float(precio if precio != "" else 0)
+    # Validar formato de fecha:
+    while True:
+        try:
+            if bool(datetime.strptime(fec_lanzamiento, formato)):
+                break
+        except:
+            fec_lanzamiento = console.input("[i]Por favor, ingrese el formato de fecha [bold green3]aaaa-mm-dd[/i][/]: ")
+            console.rule("", style="bold red1")
+   
+
+    precio = console.input("[i]Ingrese el [bold cyan]precio[/][/i][bold cyan]: ")
     console.rule("", style="bold orange_red1")
+    precio = validar_entero(precio)
+            
     cantidad = (console.input("[i]Ingrese [bold cyan]cantidad disponible[/] de este álbum[/i][bold cyan]: "))
-    cantidad = int(cantidad if cantidad.isdigit() else 0)
     console.rule("", style="bold orange_red1")
+    cantidad = validar_entero(cantidad)
+
     caratula = console.input("[i]Ingrese la [bold cyan]dirección web[/] de la Carátula[/i][bold cyan]: ")
     console.rule("", style="bold orange_red1")
 
     nuevoAlbum = modelo.Album(0,cod_album,nombre,id_interprete,id_genero,cant_temas,id_discografica,id_formato,fec_lanzamiento,precio,cantidad,caratula,1)
     con.InsertarAlbum(nuevoAlbum)
-    # Cod Hernán (idea de mostrar albums despues de insertar):
-    #listadoA = con.ListarAlbumes()
-    #for album in listadoA:
-    #    print(album)
 
 def ModificarAlbum():
     con = modelo.Conectar()
-    ListarAlbumesPorArtistas()
-    console.print("[i]---- Para volver al menú escriba [bold red1]Salir[/] ----[/i]")  
 
-    console.rule("", style="bold orange_red1")
-    cod_album = (console.input("[i]Ingrese el código del [bold cyan]Álbum[/] que quiere modificar[/i][bold cyan]: "))
+    ListarAlbumesPorArtistas()
+    console.print("[i][bold orange_red1]----[/] Para volver al menú escriba [bold red1]salir[/] [bold orange_red1]----[/][/i]", justify="center")  
+    console.rule("", style="bold orange_red1")  
+
+    cod_album = (console.input("[i]Ingrese el código del [bold cyan]álbum[/] que quiere modificar[/i][bold cyan]: "))
     if cod_album.lower() == "salir":
         return Break()
     console.rule("", style="bold orange_red1")
     while con.ExistenciaCod(cod_album, "album") == False:
-        cod_album = console.input("[i]Por favor, [bold cyan]ingrese un código[/] válido[/i]: ")
+        cod_album = console.input("[i]Por favor, ingrese un [bold green3]ID válido[/][/i]: ")
         console.rule("", style="bold red1")
 
 
@@ -234,48 +259,62 @@ def ModificarAlbum():
 
     ListarArtistasVigentes()
     console.rule("", style="bold orange_red1")
-    id_interprete = int(console.input("[i]Ingrese el [bold cyan]ID[/] del intérprete[/i][bold cyan]: "))
+    id_interprete = console.input("[i]Ingrese el [bold cyan]ID[/] del intérprete[/i][bold cyan]: ")
     console.rule("", style="bold orange_red1")
     while con.ExistenciaId(id_interprete, "interprete") == False:
-        id_interprete = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: ")
+        id_interprete = console.input("[i]Por favor, ingrese un [bold green3]ID válido[/][/i]: ")
         console.rule("", style="bold red1")
 
     ListarGenero()
     console.rule("", style="bold orange_red1")
-    id_genero = int(console.input("[i]Ingrese el [bold cyan]ID[/] del Género[/i][bold cyan]: "))
+    id_genero = console.input("[i]Ingrese el [bold cyan]ID[/] del Género[/i][bold cyan]: ")
     console.rule("", style="bold orange_red1")
     while con.ExistenciaId(id_genero, "genero") == False:
-        id_genero = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: " )
+        id_genero = console.input("[i]Por favor, ingrese un [bold green3]ID válido[/][/i]: ")
         console.rule("", style="bold red1")
-    cant_temas = (console.input("[i]Ingrese la [bold cyan]cantidad[/] de temas[/i][bold cyan]: ")) # Menos este, por supuesto.
-    cant_temas = int(cant_temas if cant_temas.isdigit() else 0)
+
+    cant_temas = console.input("[i]Ingrese la [bold cyan]cantidad[/] de temas[/i][bold cyan]: ") # Menos este, por supuesto.
     console.rule("", style="bold orange_red1")
+    cant_temas = validar_entero(cant_temas)
 
     ListarDiscografica()
     console.rule("", style="bold orange_red1")
-    id_discografica = int(console.input("[i]Ingrese el [bold cyan]ID[/] de la discografica[/i][bold cyan]: "))
+    id_discografica = console.input("[i]Ingrese el [bold cyan]ID[/] de la discografica[/i][bold cyan]: ")
     console.rule("", style="bold orange_red1")
     while con.ExistenciaId(id_discografica, "discografica") == False:
-        id_discografica = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: ")
+        id_discografica = console.input("[i]Por favor, ingrese un [bold green3]ID válido[/][/i]: ")
         console.rule("", style="bold red1")    
 
     ListarFormato()
     console.rule("", style="bold orange_red1")
-    id_formato = int(console.input("[i]Ingrese el [bold cyan]ID[/] del formato[/i][bold cyan]: "))
+    id_formato = console.input("[i]Ingrese el [bold cyan]ID[/] del formato[/i][bold cyan]: ")
     console.rule("", style="bold orange_red1")
     while con.ExistenciaId(id_formato, "formato") == False:
-        id_formato = console.input("[i]Por favor, [bold cyan]ingrese un ID[/] válido[/i]: ")
+        id_formato = console.input("[i]Por favor, ingrese un [bold green3]ID válido[/][/i]: ")
         console.rule("", style="bold red1")
+    
     # Hasta acá.
     fec_lanzamiento = console.input("[i]Ingrese la [bold cyan]fecha de lanzamiento[/] (aaaa-mm-dd)[bold cyan]: ")
+    formato = "%Y-%m-%d"
     console.rule("", style="bold orange_red1")
+    # Validar formato de fecha:
+    while True:
+        try:
+            if bool(datetime.strptime(fec_lanzamiento, formato)):
+                break
+        except:
+            fec_lanzamiento = console.input("[i]Por favor, ingrese el formato de fecha [bold green3]aaaa-mm-dd[/i][/]: ")
+            console.rule("", style="bold red1")
+    
     precio = (console.input("[i]Ingrese el [bold cyan]precio[/][/i][bold cyan]: "))
-    precio = float(precio if precio != "" else 0)
     console.rule("", style="bold orange_red1")
+    precio = validar_entero(precio)
+
     cantidad = (console.input("[i]Ingrese [bold cyan]cantidad disponible[/] de este álbum[/i][bold cyan]: "))
-    cantidad = int(cantidad if cantidad.isdigit() else 0)
     console.rule("", style="bold orange_red1")
-    caratula = console.input("[i]Ingrese la [bold cyan]dirección web[/] de la Carátula[/i][bold cyan]: ")
+    cantidad = validar_entero(cantidad)
+
+    caratula = console.input("[i]Ingrese la [bold cyan]dirección web[/] de la carátula[/i][bold cyan]: ")
     console.rule("", style="bold orange_red1")
 
     nuevoAlbum = modelo.Album(0,cod_album,nombre,id_interprete,id_genero,cant_temas,id_discografica,id_formato,fec_lanzamiento,precio,cantidad,caratula,1)
@@ -284,17 +323,17 @@ def ModificarAlbum():
 def EliminarAlbum():
     con = modelo.Conectar()
     ListarAlbumesPorArtistas()
-    console.print("[i]---- Para volver al menú escriba [bold red1]Salir[/] ----[/i]")  
-
+    console.print("[i][bold orange_red1]----[/] Para volver al menú escriba [bold red1]salir[/] [bold orange_red1]----[/][/i]", justify="center")  
     console.rule("", style="bold orange_red1")
+
     cod_album = (console.input("[i]Ingrese el [bold cyan]código del Álbum[/] que quiere eliminar[/i][bold cyan]: "))
     if cod_album.lower() == "salir":
         return Break()
     console.rule("", style="bold orange_red1")
-    while con.ExistenciaCod(cod_album, "album") == False:
-        cod_album = console.input("[i]Por favor, [bold cyan]ingrese un código[/] válido[/i]: ")
-        console.rule("", style="bold red1")
 
+    while con.ExistenciaCod(cod_album, "album") == False:
+        cod_album = console.input("[i]Por favor, ingrese un [bold green3]código válido[/][/i]: ")
+        console.rule("", style="bold red1")
 
     con.EliminarAlbum(cod_album)
 

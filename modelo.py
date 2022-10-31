@@ -13,7 +13,7 @@ class Conectar():
                 host = 'localhost',
                 port = 3306,
                 user = 'root',
-                password = '15963200',
+                password = '',
                 db = 'disqueria'
             )
         except mysql.connector.Error as descripcionError:
@@ -274,20 +274,14 @@ class Conectar():
                 if len(resultados) > 0:
                     self.console.print("[i][bold red1]No[/] se puede eliminar el álbum porque hay temas asociados a ese id[/i][bold red1]: ")
                     #Table
-                    table = Table(title="Album")
+                    table = Table(title="Temas")
                     table.add_column("ID", style="cyan",justify="center")
-                    table.add_column("COD. ÁLBUM", style="cyan", justify="center")
-                    table.add_column("NOMBRE", style="cyan", justify="center")
-                    table.add_column("ID INTÉR.", style="cyan", justify="center")
-                    table.add_column("ID GÉN.", style="cyan", justify="center")
-                    table.add_column("CANT. TEMAS", style="cyan", justify="center")
-                    table.add_column("ID DISCO.", style="cyan", justify="center")
-                    table.add_column("ID FORMATO", style="cyan", justify="center")
-                    table.add_column("FECHA", style="cyan", justify="center")
-                    table.add_column("PRECIO", style="cyan", justify="center")
-                    table.add_column("CANTIDAD", style="cyan", justify="center")
+                    table.add_column("TÍTULO", style="cyan", justify="center")
+                    table.add_column("DURACIÓN", style="cyan", justify="center")
+                    table.add_column("AUTOR", style="cyan", justify="center")
+                    table.add_column("COMPOSITOR", style="cyan", justify="center")
                     for i in resultados:
-                        table.add_row(str(i[0]), str(i[1]), str(i[2]), str(i[3]), str(i[4]), str(i[5]), str(i[6]), str(i[7]), str(i[8]), str(i[9]), str(i[10]))
+                        table.add_row(str(i[0]), str(i[1]), str(i[2]), str(i[3]), str(i[4]))
                     self.console.print(table)
 
                     self.console.rule("", style="bold orange_red1")
@@ -305,6 +299,7 @@ class Conectar():
                     else:
                         self.conexion.commit()
                         self.conexion.close()
+                        self.console.print("[i][bold green3]No[/] se han efectuado cambios[/i].",justify="center")
                         return
                 else:
                     sentenciaSQL = "UPDATE  album set vigente = 0 WHERE cod_album = %s" 
@@ -375,7 +370,14 @@ class Conectar():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sentenciaSQL = """SELECT * FROM album WHERE album.nombre like %s"""
+                sentenciaSQL = """SELECT album.cod_album, album.nombre, interprete.apellido, interprete.nombre, genero.nombre, discografica.nombre, album.fec_lanzamiento, album.precio, album.cantidad, formato.tipo
+                FROM album 
+                INNER JOIN interprete ON album.id_interprete = interprete.id_interprete
+                INNER JOIN discografica ON album.id_discografica = discografica.id_discografica 
+                INNER JOIN formato ON album.id_formato = formato.id_formato 
+                INNER JOIN genero ON album.id_genero = genero.id_genero
+                WHERE album.nombre like %s
+                AND album.vigente = 1"""
 
                 cursor.execute(sentenciaSQL, (('%' + nombre + '%',)))
                 resultados = cursor.fetchall()
@@ -396,8 +398,8 @@ class Conectar():
                 sentenciaSQL = "SELECT * FROM "+tabla+" WHERE vigente = 1 AND id_"+tabla+" = %s"
                 cursor.execute(sentenciaSQL,(id,))
                 resultados = cursor.fetchall()
-                # self.conexion.commit()
-                # self.conexion.close()                
+                self.conexion.commit()
+                # self.conexion.close() Cerramos conexión dentro de la función que llama a esta.                
                 if len(resultados) == 0:
                     return False
                 else:
